@@ -19,6 +19,7 @@
 	\newtheorem{defn}[thm]{Definition}
 	\newtheorem{remark}[thm]{Remark}
 	\newtheorem{claim}[thm]{Claim}
+	\newtheorem{ex}[thm]{Example}
 	
 	\section{Holomorphic Function and Analytic Continuation}
 	\begin{defn}[Holomorphic Function]
@@ -39,7 +40,27 @@
 
 	\textbf{ILLUSTRATION NEEDED}
 	
-	
+	\subsection{Analytic continuation}
+	\begin{ex}
+		\begin{enumerate}\
+			\item[(i)] 
+			\[ f(z) = \sum_{\infty}^{n=0} z^n = 1 + z + z^2 \]
+			has radius of convergence 1 and 
+			\[ f(z) = \frac{a}{1-z} \]
+			for $ \left| z \right| < 1$.
+			\\
+			Identity theorem implies that functions defined by expansions about point on path agree wherever they are defined. 
+			\item[(ii)]Consider the function 
+			\begin{align*}
+				f: \lbrace z \in \mathbb{C} \mid \Re z > 0 \rbrace &\longrightarrow \mathbb{C}\\
+				z &\longmapsto \sqrt{z}
+			\end{align*}
+			If we analytically continue it along $ \gamma = e^{i \pi t} $,then we find the continuation is $ e^{i\pi} = i $ at $ z = i $.
+			\\
+			If we analytically continue it along $ \gamma = e^{-i \pi t} $ then the continuations is $ e^{-i\pi} = -i $ at $ z = i $.
+			
+		\end{enumerate}
+	\end{ex}
 	
 	
 	
