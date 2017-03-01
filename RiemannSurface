@@ -13,11 +13,12 @@
 	\newtheorem{thm}{Theorem}[section]
 	\newtheorem{lem}[thm]{Lemma}
 	\newtheorem{coro}[thm]{Corollary}
+	\newtheorem{prop}[thm]{Property}
 	
 	\theoremstyle{definition}
 	\newtheorem{defn}[thm]{Definition}
 	\newtheorem{remark}[thm]{Remark}
-	
+	\newtheorem{claim}[thm]{Claim}
 	
 	\section{Holomorphic Function and Analytic Continuation}
 	\begin{defn}[Holomorphic Function]
@@ -62,8 +63,8 @@
 	\begin{defn}
 		Let $ S $ be the equivalence classes of path in $ P $, $ S:= P/\sim $, and define the \emph{quotient map} $ q $:
 		\begin{align*}
-			q: P &\to S\\
-			\gamma &\mapsto \lbrack \gamma \rbrack_\sim
+			q: P &\longrightarrow S\\
+			\gamma &\longmapsto \lbrack \gamma \rbrack_\sim
 		\end{align*}
 	\end{defn}
 	\begin{defn}
@@ -90,6 +91,128 @@
 			\item[(ii)] it follows that $ \pi $ is also a continuous function: $ \forall $ open subset $ U \subset \mathbb{C} $, $ (\pi q)^{-1}(U) = q^{-1} ( \pi^{-1}(U)) $ is open in $ P $. By the definition of open subsets in $ S $, $ \pi^{-1}(U) $ is open.
 		\end{enumerate}
 	\end{remark}
+	\textbf{Statement 1.} Each $ \lbrack \gamma \rbrack $ has an open neighbourhood $ V \ni \lbrack \gamma \rbrack $ such that
+	\[\begin{matrix}
+		\xymatrix{
+			V \ar[r]^{ \left. \pi \right|_V } & \mathbb{C}
+		}
+	\end{matrix}\]
+	is a homeomorphism into an open subset of $ \mathbb{C} $.
+	\\
+	Given $ \lbrack \gamma \rbrack \in S $. Let $ U \subset \mathbb{C} $ to be a neighbourhood of $ \pi(\lbrack \gamma \rbrack) = \gamma(1) $ in which analytic continuation along $ \gamma $ is defined. Then $ \pi^{-1}(U) $ is open in $ S $. This consists of all equivalence classes of paths in $ P $ with endpoints in $ U $.
 	
-	 
+	
+\textbf{ILLUSTRATION NEEDED}
+
+	There is a subset of $ \pi^{-1}(U) $ consisting of paths in $ P $ where analytic continuation agrees with that along $ \gamma $ in $ U $.
+	
+	\begin{claim}
+		This is an open subset of $ \pi^{-1}(U) $ (hence of S).
+	\end{claim}
+	\textbf{Idea of proof}
+\\
+\textbf{ILLUSTRATION NEEDED}
+\\
+	Suppose $ \gamma^{\prime} $ is a path in $ P $ such that $ \gamma^{\prime}(1) = U $ and the analytic continuation $ f_{ \gamma^{\prime} } $ agrees with $ f_{ \gamma } $ in $ U $.
+\\
+\textbf{ILLUSTRATION NEEDED}
+\\
+	Suppose we can analytically continue $ f $ along $ \gamma $. This means that we can cover $ \gamma(\lbrack 0,1 \rbrack) $ by finitely many disks $ D_0, D_1, D_2,..., D_n $ such that there is an analytic function $ f_i $ defined in $ D_i $ and 
+	\[ \left. f_i \right|_{D_i \cap D_{i+1}} = \left. f_{i+1} \right|_{D_i \cap D_{i+1}} \]
+\\
+\textbf{ILLUSTRATION NEEDED}
+\\
+	Choose closed intervals $ \lbrack t_i, t_{i+1} \rbrack $ such that $ 0 < t_0 < t_1 < ... < t_{n+1} < 1$ and 
+	\begin{align*}
+		\gamma(\lbrack t_0 , t_1 \rbrace) &\subset D_0\\
+		\gamma(\lbrack t_1 , t_2 \rbrace) &\subset D_1\\
+		&...\\
+		\gamma(\lbrack t_n , t_{n+1} \rbrace) &\subset D_n
+	\end{align*}
+	Consider $ U_\gamma = P_{\lbrack t_0 , t_1 \rbrack , D_0 } \cap P_{\lbrack t_1 , t_2 \rbrack , D_1 } \cap ... \cap P_{\lbrack t_n , t_{n+1} \rbrack , D_n } \subset P $ , which is an open containing $ \gamma $.
+	
+	By construction the analytic continuation $ f_{\gamma^\prime} $ for any $ \gamma^\prime \in U_\gamma $ agrees with $ f_\gamma $ in $ D_n $.
+	
+	\begin{claim}
+		$ q(U) $ is open in $ S $.
+	\end{claim}
+	\begin{proof}
+		We need to show that $ q^{-1}(q(U_\gamma)) $ is open in $ P $. For $ \gamma \in q^{-1}(q(U_\gamma)) $, if $ \gamma^\prime(1) \in D_n $ and analytic contination $ f_{ \gamma^\prime } $ agress with $ f_\gamma $ in $ D_n $, then, by the above argument, there is an open neighbourhood $ f_\gamma $ such that, for any $ \gamma^{\prime\prime} \in D_n $ and 
+		\[ \left. f_{\gamma^{\prime\prime}} \right|_{D_n} = \left. f_{\gamma^\prime} \right|_{D_n} = \left. f_\gamma \right|_{D_n} \]
+		so $ U_\gamma \subset q^{-1}(q(U_\gamma)) $. Hence, $ q^{-1}(q(U_\gamma)) $ is open.
+	\end{proof}
+	By a similar argument, $ \pi^{-1} - q(U_\gamma)) $ is also open. This means $ q(U_\gamma) $ is both open and closed, so it is a union of connected components of $ \pi^{-1}(U) $.
+
+	\begin{defn}
+		A map $ f: S \to \mathbb{C} $ is \emph{open} if for any open subset $ V \subset S $, $ f(V) $ is open in $ \mathbb{C} $.
+	\end{defn}
+	
+	\begin{claim}
+		The map $ \pi: S \to \mathbb{C} $ is an open map. 
+	\end{claim}
+	\begin{proof}
+		Consider a basic open subset $ V $ where
+		\[ q^{-1} = P_{k , U} \subset P \]
+		where \[ P_{k , U} = \lbrace \gamma \in P \mid \gamma(K) \subset U \rbrace \]
+		Hence, \[ V = \lbrace \lbrack\gamma\rbrack \in S \mid \gamma(K) \subset U \rbrace \]
+		and 
+		\begin{align*}
+		\pi(V) &= \lbrace \gamma(1) \mid \gamma(K) \subset U , \gamma \in P\rbrace \\
+		&=  \begin{cases}
+				U \cap D_f	&\text{if } 1 \in K\\
+				D_f			&\text{if } 1 \notin K\\
+			\end{cases}
+		\end{align*}
+		where $ D_f $ is the union of all open disks with some defined analytic continuation of $ f $. In either case $ \pi(V) $ is open.
+	\end{proof}
+	\begin{claim}
+		The restriction of $ \pi $ to $ q(U_\gamma) $:
+		\[\begin{matrix}
+			\xymatrix{q(U_\gamma) \subset S \ar[d]^\pi &\\
+			U \subset \mathbb{C} }
+		\end{matrix}\]
+		is a bijection on to U.
+	\end{claim}
+	This shows that $ \left.\pi \right|_{q(U_\gamma)} $ is a homeomorphism.
+	\begin{proof}\
+		\emph{Injective:} Suppose $ \pi \lbrack \gamma_1 \rbrack = \pi \lbrack \gamma_2 \rbrack $, for $ \lbrack \gamma_1 \rbrack = \lbrack \gamma_2 \rbrack \in q(U_\gamma) $. Then
+		\[ \gamma_1(1) = \gamma_2(1) = z_1 \] 
+		and analytic continuation along $ \gamma_1 $ and $ \gamma_2 $ agree near $ z_1 $ (as both of the are in $ U_\gamma $). Hence,
+		\[ \lbrack \gamma_1 \rbrack = \lbrack \gamma_2 \rbrack \]
+		and $ \left.\pi \right|_{q(U_\gamma)} $ is injective. $ \qed $
+		\\
+		\emph{Surjective:} The choice of $ U $ shows that $ \left.\pi \right|_{q(U_\gamma)} $ is subjective. 
+\\
+\textbf{ILLUSTRATION NEEDED}
+\\
+		We can extend $ \gamma $ by a radial path in $ U $ to obtain a new path, with endpoint at any given point of $ U $, along which we can analytically continue, and such that the analytic continuation agrees with that along $ \gamma $. $ \qed $
+		\\
+		Hence, $ \left.\pi \right|_{q(U_\gamma)} $ is bijective.
+	\end{proof}
+	\begin{coro}
+		$ S $ is a Riemann surface.
+	\end{coro}
+	\begin{proof}
+		$ S $ is a topological space, locally homeomorphic to $ \mathbb{C} $, so $ S $ is a Hausdorff topological space.
+		
+		We use $ \pi $ to give charts: cover $ S $ by open subsets $ q(U_\gamma) $ for $ \lbrack \gamma \rbrack \in S $ and on each 
+		\[ \left.\pi \right|_{q(U_\gamma)}: q(U_\gamma) \longrightarrow U \]
+		is a homeomorphism. The transition functions are the identity, hence are analytic.
+	\end{proof}
+	\begin{prop}
+		$ \tilde{f}: S \to \mathbb{C} $ is an holomorphic function.
+	\end{prop}
+	\begin{proof}
+		We need to show that $ \tilde{f} $ is holomorphic in each chat. Note 
+		\[\begin{matrix}
+		\xymatrix{
+			q(U_\gamma) \ar[d]_{\pi} \ar[r]^{ \tilde{f} } &\mathbb{C} &\\ 
+			U \ar[ur]_{\tilde{f} \circ \pi}
+		}
+		\end{matrix}\]
+		where $ \tilde{f} \circ \pi $ is the analytic continuation of $ f $ along $ \gamma $ (defined in $ U $).
+	\end{proof}
+	\begin{remark}
+		$ \tilde{f}: S \to \mathbb{C} $ encodes all possible analytic continuations of $ f $. The analytic continuation along $ \gamma $ is given by the restriction of $ \tilde{f} $ to $ q(U_\gamma) $.
+	\end{remark}
 \end{document}
