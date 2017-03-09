@@ -2,28 +2,29 @@
 \usepackage{amsmath,amsthm,amssymb}
 \usepackage{enumerate}
 \usepackage[all]{xy}
+\date{March 2017}
+\title{MATH399: Riemann Surface}
+\author{Xinran Yu}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{coro}[thm]{Corollary}
+\newtheorem{prop}[thm]{Property}
+	
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{remark}[thm]{Remark}
+\newtheorem{claim}[thm]{Claim}
+\newtheorem{ex}[thm]{Example}
+	
 \begin{document}
 
-	\date{Feb 2017}
-	\title{MATH399: Riemann Surface}
-	\author{Xinran Yu}
+	%\includegraphics[width=2in]{picture.pdf}
 	\maketitle
-
-	\theoremstyle{plain}
-	\newtheorem{thm}{Theorem}[section]
-	\newtheorem{lem}[thm]{Lemma}
-	\newtheorem{coro}[thm]{Corollary}
-	\newtheorem{prop}[thm]{Property}
-	
-	\theoremstyle{definition}
-	\newtheorem{defn}[thm]{Definition}
-	\newtheorem{remark}[thm]{Remark}
-	\newtheorem{claim}[thm]{Claim}
-	\newtheorem{ex}[thm]{Example}
-	
 	\section{Holomorphic Function and Analytic Continuation}
 	\begin{defn}[Holomorphic Function]
-		Let $ D $ be an open subset of the complex plane $ \mathbb{C} $, $ f : D \to \mathbb{C} $ is a \emph{holomorphic (analytic)} function if $ f $ can be written as a power series 
+		Let $ D $ be an open subset of the complex plane $ \mathbb{C} $, $ f : D \to \mathbb{C} $ is a \emph{holomorphic (analytic)} function if $ f $ can be written as a power series
 		\[ f(z) = \sum_{n=0}^{\infty} (z-a)^n \frac{f^n(z)}{n\!} \]
 		where $ a \in D $.
 	\end{defn}
@@ -43,14 +44,14 @@
 	\subsection{Analytic continuation}
 	\begin{ex}
 		\begin{enumerate}\
-			\item[(i)] 
+			\item[(i)]
 			\[ f(z) = \sum_{\infty}^{n=0} z^n = 1 + z + z^2 \]
-			has radius of convergence 1 and 
+			has radius of convergence 1 and
 			\[ f(z) = \frac{a}{1-z} \]
 			for $ \left| z \right| < 1$.
 			\\
-			Identity theorem implies that functions defined by expansions about point on path agree wherever they are defined. 
-			\item[(ii)]Consider the function 
+			Identity theorem implies that functions defined by expansions about point on path agree wherever they are defined.
+			\item[(ii)]Consider the function
 			\begin{align*}
 				f: \lbrace z \in \mathbb{C} \mid \Re z > 0 \rbrace &\longrightarrow \mathbb{C}\\
 				z &\longmapsto \sqrt{z}
@@ -62,36 +63,43 @@
 		\end{enumerate}
 	\end{ex}
 	
-	
-	
+% section 2, notes-p.13
 	\section{Riemann surface of a holomorphic function}
-	Suppose there is an open subset $ D \subset \mathbb{C} $, and a holomorphic function $ f: D \to \mathbb{C} $. 
+	Suppose there is an open subset $ D \subset \mathbb{C} $, and a holomorphic function $ f: D \to \mathbb{C} $.
 	Fix $ z_0 \in D $, and let $ P $ be a collection of path $ \gamma: \lbrack0,1\rbrack \to \mathbb{C} $, satisfying:
 	\begin{enumerate}[(i)]
 		\item $ \gamma(0) = z_0 $;
-		\item f can be analytically continued along $ \gamma $.
+		\item f has an analytical continuation along $ \gamma $.
 	\end{enumerate}
-\textbf{ILLUSTRATION NEEDED}\\
+
+	\begin{defn}
+		For each closed subset $ K \subset \lbrack 0,1 \rbrack $, and each $ U \in \mathbb{C} $ open, the subset
+		\[ P_{K,U} = \lbrace \gamma \in P \mid \gamma(K) \subset U\rbrace \] is called \emph{open}.
+		A general open subset is obtained by taking arbitrary union and finite intersections of these $ P_{K,U} $'s.
+		This gives the \emph{compact-open topology} on $ P $.
+	\end{defn}
+	
 	\begin{defn}
 		An \emph{equivalence relation} $ \sim $ on $ P $, is defined by $ \gamma_0 \sim \gamma_1$ if and only if
 		\begin{enumerate}
 			\item[(i)] $ \gamma_0(1) = \gamma_1(1) = z_1 $, where $ z_1 \in \mathbb{C} $ is the endpoint of $ \gamma_0 $ and $ \gamma_1 $;
-			\item[(ii)] $ \exists V $, an open neighbourhood of $ z_1$ such that 
+			\item[(ii)] $ \exists V $, an open neighbourhood of $ z_1$, such that
 			\[ \left. f_0 \right|_V = \left. f_1 \right|_V \]
-			That is, analytic continuations of $ f_0 $ and $ f_1 $ along $ \gamma_0 $ and $ \gamma_1 $ respectively agree in some open 	neighbourhood of $ z_0 $.
+			That is, analytic continuations of $ f_0 $ and $ f_1 $ along $ \gamma_0 $ and $ \gamma_1 $, respectively, agree in some open 	neighbourhood of $ z_0 $.
 		\end{enumerate}
 	\end{defn}
+
 	\begin{defn}
-		Let $ S $ be the equivalence classes of path in $ P $, $ S:= P/\sim $, and define the \emph{quotient map} $ q $:
+		Let $ S $ be the equivalence classes of path in $ P $, $ S:= P/\sim $, and the \emph{quotient map} $ q $ is:
 		\begin{align*}
 			q: P &\longrightarrow S\\
 			\gamma &\longmapsto \lbrack \gamma \rbrack_\sim
 		\end{align*}
 	\end{defn}
-	\begin{defn}
-		A subset $ U \subset S $ is \emph{open}, if and only if $ q^{-1}(U) \subset P $ is open.
-	\end{defn}
-	Then there are maps
+	As a set, $ S $ is the equivalence classes of $ \sim $ , and as a topological space, a subset $ W \subset S $ is \emph{open} if and only if $ q^{-1}(W) \subset P $ is open.
+	
+% notes-p.14
+	There are maps
 	\[\begin{matrix}
 		\xymatrix{
 			P \ar@/_/[ddr]_{ \gamma \mapsto \gamma \lbrace 1 \rbrace } \ar[dr]^q\\			
@@ -99,8 +107,8 @@
 			& \mathbb{C}
 		}
 	\end{matrix}\]
-	where 
-	\[ \pi(\lbrack \gamma \rbrack) = \gamma(1) \] 
+	where
+	\[ \pi(\lbrack \gamma \rbrack) = \gamma(1) \]
 	and
 	\[ \tilde{f}(\lbrack \gamma \rbrack) = f_\gamma (\gamma(1)) \]
 	
@@ -112,38 +120,31 @@
 			\item[(ii)] it follows that $ \pi $ is also a continuous function: $ \forall $ open subset $ U \subset \mathbb{C} $, $ (\pi q)^{-1}(U) = q^{-1} ( \pi^{-1}(U)) $ is open in $ P $. By the definition of open subsets in $ S $, $ \pi^{-1}(U) $ is open.
 		\end{enumerate}
 	\end{remark}
-	\textbf{Statement 1.} Each $ \lbrack \gamma \rbrack $ has an open neighbourhood $ V \ni \lbrack \gamma \rbrack $ such that
+	
+	Now we show that each $ \lbrack \gamma \rbrack $ has an open neighbourhood $ V \ni \lbrack \gamma \rbrack $ such that
 	\[\begin{matrix}
 		\xymatrix{
 			V \ar[r]^{ \left. \pi \right|_V } & \mathbb{C}
 		}
 	\end{matrix}\]
 	is a homeomorphism into an open subset of $ \mathbb{C} $.
-	\\
+	
 	Given $ \lbrack \gamma \rbrack \in S $. Let $ U \subset \mathbb{C} $ to be a neighbourhood of $ \pi(\lbrack \gamma \rbrack) = \gamma(1) $ in which analytic continuation along $ \gamma $ is defined. Then $ \pi^{-1}(U) $ is open in $ S $. This consists of all equivalence classes of paths in $ P $ with endpoints in $ U $.
 	
-	
-\textbf{ILLUSTRATION NEEDED}
-
+% notes-p.15
 	There is a subset of $ \pi^{-1}(U) $ consisting of paths in $ P $ where analytic continuation agrees with that along $ \gamma $ in $ U $.
 	
 	\begin{claim}
 		This is an open subset of $ \pi^{-1}(U) $ (hence of S).
 	\end{claim}
-	\textbf{Idea of proof}
-\\
-\textbf{ILLUSTRATION NEEDED}
-\\
+
 	Suppose $ \gamma^{\prime} $ is a path in $ P $ such that $ \gamma^{\prime}(1) = U $ and the analytic continuation $ f_{ \gamma^{\prime} } $ agrees with $ f_{ \gamma } $ in $ U $.
-\\
-\textbf{ILLUSTRATION NEEDED}
-\\
-	Suppose we can analytically continue $ f $ along $ \gamma $. This means that we can cover $ \gamma(\lbrack 0,1 \rbrack) $ by finitely many disks $ D_0, D_1, D_2,..., D_n $ such that there is an analytic function $ f_i $ defined in $ D_i $ and 
+
+% notes-p.16
+	Suppose we can analytically continue $ f $ along $ \gamma $. This means that we can cover $ \gamma(\lbrack 0,1 \rbrack) $ by finitely many disks $ D_0, D_1, D_2,..., D_n $ such that there is an analytic function $ f_i $ defined in $ D_i $ and
 	\[ \left. f_i \right|_{D_i \cap D_{i+1}} = \left. f_{i+1} \right|_{D_i \cap D_{i+1}} \]
-\\
-\textbf{ILLUSTRATION NEEDED}
-\\
-	Choose closed intervals $ \lbrack t_i, t_{i+1} \rbrack $ such that $ 0 < t_0 < t_1 < ... < t_{n+1} < 1$ and 
+
+	Choose closed intervals $ \lbrack t_i, t_{i+1} \rbrack $ such that $ 0 < t_0 < t_1 < ... < t_{n+1} < 1$ and
 	\begin{align*}
 		\gamma(\lbrack t_0 , t_1 \rbrace) &\subset D_0\\
 		\gamma(\lbrack t_1 , t_2 \rbrace) &\subset D_1\\
@@ -158,10 +159,12 @@
 		$ q(U) $ is open in $ S $.
 	\end{claim}
 	\begin{proof}
-		We need to show that $ q^{-1}(q(U_\gamma)) $ is open in $ P $. For $ \gamma \in q^{-1}(q(U_\gamma)) $, if $ \gamma^\prime(1) \in D_n $ and analytic contination $ f_{ \gamma^\prime } $ agress with $ f_\gamma $ in $ D_n $, then, by the above argument, there is an open neighbourhood $ f_\gamma $ such that, for any $ \gamma^{\prime\prime} \in D_n $ and 
+		We need to show that $ q^{-1}(q(U_\gamma)) $ is open in $ P $. For $ \gamma \in q^{-1}(q(U_\gamma)) $, if $ \gamma^\prime(1) \in D_n $ and analytic contination $ f_{ \gamma^\prime } $ agress with $ f_\gamma $ in $ D_n $, then, by the above argument, there is an open neighbourhood $ f_\gamma $ such that, for any $ \gamma^{\prime\prime} \in D_n $ and
 		\[ \left. f_{\gamma^{\prime\prime}} \right|_{D_n} = \left. f_{\gamma^\prime} \right|_{D_n} = \left. f_\gamma \right|_{D_n} \]
 		so $ U_\gamma \subset q^{-1}(q(U_\gamma)) $. Hence, $ q^{-1}(q(U_\gamma)) $ is open.
 	\end{proof}
+
+%notes-p.17	
 	By a similar argument, $ \pi^{-1} - q(U_\gamma)) $ is also open. This means $ q(U_\gamma) $ is both open and closed, so it is a union of connected components of $ \pi^{-1}(U) $.
 
 	\begin{defn}
@@ -169,14 +172,15 @@
 	\end{defn}
 	
 	\begin{claim}
-		The map $ \pi: S \to \mathbb{C} $ is an open map. 
+		The map $ \pi: S \to \mathbb{C} $ is an open map.
 	\end{claim}
+	
 	\begin{proof}
 		Consider a basic open subset $ V $ where
 		\[ q^{-1} = P_{k , U} \subset P \]
 		where \[ P_{k , U} = \lbrace \gamma \in P \mid \gamma(K) \subset U \rbrace \]
 		Hence, \[ V = \lbrace \lbrack\gamma\rbrack \in S \mid \gamma(K) \subset U \rbrace \]
-		and 
+		and
 		\begin{align*}
 		\pi(V) &= \lbrace \gamma(1) \mid \gamma(K) \subset U , \gamma \in P\rbrace \\
 		&=  \begin{cases}
@@ -186,54 +190,169 @@
 		\end{align*}
 		where $ D_f $ is the union of all open disks with some defined analytic continuation of $ f $. In either case $ \pi(V) $ is open.
 	\end{proof}
+	
+%notes-p.18
 	\begin{claim}
 		The restriction of $ \pi $ to $ q(U_\gamma) $:
 		\[\begin{matrix}
-			\xymatrix{q(U_\gamma) \subset S \ar[d]^\pi &\\
-			U \subset \mathbb{C} }
+			\xymatrix{
+			q(U_\gamma)\ar[d]^\pi & \hspace{-1cm}\subset S \\
+			U &\hspace{-1.5cm}\subset \mathbb{C} }
 		\end{matrix}\]
 		is a bijection on to U.
 	\end{claim}
+	
 	This shows that $ \left.\pi \right|_{q(U_\gamma)} $ is a homeomorphism.
 	\begin{proof}\
 		\emph{Injective:} Suppose $ \pi \lbrack \gamma_1 \rbrack = \pi \lbrack \gamma_2 \rbrack $, for $ \lbrack \gamma_1 \rbrack = \lbrack \gamma_2 \rbrack \in q(U_\gamma) $. Then
-		\[ \gamma_1(1) = \gamma_2(1) = z_1 \] 
+		\[ \gamma_1(1) = \gamma_2(1) = z_1 \]
 		and analytic continuation along $ \gamma_1 $ and $ \gamma_2 $ agree near $ z_1 $ (as both of the are in $ U_\gamma $). Hence,
 		\[ \lbrack \gamma_1 \rbrack = \lbrack \gamma_2 \rbrack \]
 		and $ \left.\pi \right|_{q(U_\gamma)} $ is injective. $ \qed $
 		\\
-		\emph{Surjective:} The choice of $ U $ shows that $ \left.\pi \right|_{q(U_\gamma)} $ is subjective. 
-\\
-\textbf{ILLUSTRATION NEEDED}
-\\
-		We can extend $ \gamma $ by a radial path in $ U $ to obtain a new path, with endpoint at any given point of $ U $, along which we can analytically continue, and such that the analytic continuation agrees with that along $ \gamma $. $ \qed $
+		\emph{Surjective:} The choice of $ U $ shows that $ \left.\pi \right|_{q(U_\gamma)} $ is subjective. We can extend $ \gamma $ by a radial path in $ U $ to obtain a new path, with endpoint at any given point of $ U $, along which we can analytically continue, and such that the analytic continuation agrees with that along $ \gamma $. $ \qed $
 		\\
 		Hence, $ \left.\pi \right|_{q(U_\gamma)} $ is bijective.
 	\end{proof}
+	
 	\begin{coro}
 		$ S $ is a Riemann surface.
 	\end{coro}
+	
 	\begin{proof}
 		$ S $ is a topological space, locally homeomorphic to $ \mathbb{C} $, so $ S $ is a Hausdorff topological space.
 		
-		We use $ \pi $ to give charts: cover $ S $ by open subsets $ q(U_\gamma) $ for $ \lbrack \gamma \rbrack \in S $ and on each 
+		We use $ \pi $ to give charts: cover $ S $ by open subsets $ q(U_\gamma) $ for $ \lbrack \gamma \rbrack \in S $ and on each
 		\[ \left.\pi \right|_{q(U_\gamma)}: q(U_\gamma) \longrightarrow U \]
 		is a homeomorphism. The transition functions are the identity, hence are analytic.
 	\end{proof}
+
+%notes-p.19	
 	\begin{prop}
 		$ \tilde{f}: S \to \mathbb{C} $ is an holomorphic function.
 	\end{prop}
+	
 	\begin{proof}
-		We need to show that $ \tilde{f} $ is holomorphic in each chat. Note 
+		We need to show that $ \tilde{f} $ is holomorphic in each chat. Note
 		\[\begin{matrix}
 		\xymatrix{
-			q(U_\gamma) \ar[d]_{\pi} \ar[r]^{ \tilde{f} } &\mathbb{C} &\\ 
+			q(U_\gamma) \ar@{<->}[d]_{\pi} \ar[r]^{ \tilde{f} } &\mathbb{C} &\\
 			U \ar[ur]_{\tilde{f} \circ \pi}
 		}
 		\end{matrix}\]
 		where $ \tilde{f} \circ \pi $ is the analytic continuation of $ f $ along $ \gamma $ (defined in $ U $).
 	\end{proof}
+	
 	\begin{remark}
 		$ \tilde{f}: S \to \mathbb{C} $ encodes all possible analytic continuations of $ f $. The analytic continuation along $ \gamma $ is given by the restriction of $ \tilde{f} $ to $ q(U_\gamma) $.
 	\end{remark}
-\end{document}
+	
+	\section{Finding Riemann surface}
+	\begin{defn}
+		Given $ x \in X $, there is an open neighbourhood $ U \ni x $ such that
+		\[ \left. f \right|_U : \longrightarrow f(U)  \]
+		is a homeomorphism, then f is called a \emph{local homeomorphism}.
+	\end{defn}Suppose there are a connected Riemann surface $ X $ and holomorphic maps
+	\[\begin{matrix}
+	\xymatrix{
+		X \ar[d]_{f} \ar[r]^{g} &\mathbb{C} &\\
+		C
+	}
+	\end{matrix}\]
+	which are local homeomorphisms.
+	Let $ h = \left. g \right|_U \circ (\left. f \right|_U)^{-1} $, h is holomorphic.
+	\[\begin{matrix}
+	\xymatrix{
+		U \ar[d]_{\left. f \right|_U} \ar[r]^{\left. g \right|_U} &g(U) &\\
+		f(U) \ar[ur]_{h}
+	}
+	\end{matrix}\]
+	\begin{claim}
+		There is a commutative diagram of holomorphic maps.
+		\[\begin{matrix}
+		\xymatrix{
+			X \ar@/_/[ddr]_f \ar[dr]^k \ar@/^/[drr]^g \\			
+			&S_h \ar[d]^{\pi} \ar[r]_{ \tilde{h} } & \mathbb{C} \\
+			& \mathbb{C}
+		}
+		\end{matrix}\]	
+	\end{claim}
+
+%notes-p.25
+	\begin{proof}
+		Choose $ x^\prime \in X $. Choose a path $ \gamma: \lbrack 0,1 \rbrack \to X $ from $ x $ to $ x^\prime $, that is $ \gamma(0) = x $ and $ \gamma(a) = x^\prime $. Such an $ x^\prime $ exists since $ X $ is connected.
+		Then we obtain a path $ f \circ \gamma: \lbrack 0,1 \rbrack \to \mathbb{C} $ mapping $ f(x) $ to $ f(x^\prime) $. We can analytically continue $ h $ along the path $ f \circ \gamma $ because $ f $ is a local homeomorphism onto its image. At any point $ f \circ \gamma(t) $ the analytic continuation of $ h $ is defined as $ g \circ \gamma(t) $.
+		
+		Define $ k(x^\prime) = \lbrack f \circ \gamma \rbrack \in S_h $. Since $ \tilde{h} (\lbrack f \circ \gamma \rbrack) $ is the value of analytic continuation of $ h $ along $ f \circ \gamma $ at $ f \circ \gamma(1) $ we have
+		\begin{align*}
+			\pi(\lbrack f \circ \gamma \rbrack) = f \circ \gamma(1) =f(x^\prime) \\
+			\tilde{h} (\lbrack f \circ \gamma \rbrack) = g \circ \gamma(1) =g(x^\prime)
+		\end{align*}
+		So
+		\begin{align*}
+		\pi \circ k(x^\prime) = f(x^\prime) \\
+		\tilde{h} \circ k(x^\prime) =g(x^\prime)
+		\end{align*}
+		We need to check that $ k(x^\prime) $ does not dependent on the choice of path $ \gamma $ from $ x $ to $ x^\prime $. However, for any choice of $ \gamma $ we have the same endpoint of $ f \circ \gamma $ namely, $ f(x^\prime) $. Also, the analytic continuation agree in a neighbourhood of this endpoint and agree with
+		\[ h = \left. g \right|_U \circ (\left. f \right|_U)^{-1} \]
+		where $ U^\prime \ni x^\prime $ is an open neighbourhood such that $ \left. f \right|_U $ and $\left. g \right|_U $ are homeomorphisms onto their images. Hence the class $ \lbrack f\ circ \gamma \rbrack $ is well-defined.
+	\end{proof}
+
+%notes-p.26
+	Since $ \pi $ and $ f $ are local homeomorphisms, so is $ k $ Locally, $ k = \pi_{-1} \circ f $ is holomorphic. Also, $ k(x^\prime) = k(x^{\prime\prime}) \implies f(x^\prime) = f(x^{\prime\prime}) $ and $ g(x^\prime) = g(x^{\prime\prime}) $. Hence, if either $ f $ or $ g $ is injective, then so is $ k $.
+	\begin{ex}\
+		\begin{enumerate}
+			\item [(i)] for $ h = \sqrt{z} $, we have the following holomorphic maps:
+			\[\begin{matrix}
+			\xymatrix{
+				{ \mathbb{C} - \lbrace 0 \rbrace } \ar@/_/[ddr]_{ f(z) = z^2 } \ar[dr]^k \ar@/^/[drr]^{ g(z) = z } \\			
+				&S_{\sqrt{}} \ar[d]^{\pi} \ar[r]_{ \tilde{\sqrt{}} } &{ \mathbb{C} - \lbrace 0 \rbrace } \\
+				&{ \mathbb{C} - \lbrace 0 \rbrace }
+			}
+			\end{matrix}\]	
+			Here $ k $ is a biholomorphic because any path in $ \mathbb{C} - \lbrace 0 \rbrace $ is the image of a path in $ \mathbb{C} - \lbrace 0 \rbrace $ via $ f(z) = z $, that is, $ k $ is surjective.
+			\item [(ii)] for $ h = \ln $, we have the following holomorphic maps:
+			\[\begin{matrix}
+			\xymatrix{
+				\mathbb{C} \ar@/_/[ddr]_{ f(z) = \exp } \ar[dr]^k \ar@/^/[drr]^{ g(z) = id } \\			
+				&S_{\ln} \ar[d]^{\pi} \ar[r]_{ \tilde{\ln} } &\mathbb{C}  \\
+				&{ \mathbb{C} - \lbrace 0 \rbrace }
+			}
+			\end{matrix}\]
+			Here $ k $ is a biholomorphic because any path in $ \mathbb{C} - \lbrace 0 \rbrace $ is the image of exponential function.
+			\item [(i)] for a polynomial $ p: \mathbb{C} \to \mathbb{C} $ the commutative map is:
+			\[\begin{matrix}
+			\xymatrix{
+				{ \mathbb{C} - \lbrace z \mid p^\prime(z) = 0 \rbrace } \ar@/_/[ddr]_p \ar[dr]^k \ar@/^/[drr]^g \\			
+				&S_r \ar[d]^{\pi} \ar[r]_{ \tilde{r} } &\mathbb{C} \\
+				&\mathbb{C}
+			}
+			\end{matrix}\]	
+			where $ r: D \to \mathbb{C} $ gives a local root of $ p $ in some neighbourhood of $ D $.
+		\end{enumerate}
+	\end{ex}
+
+	\section{}
+	How much does a Riemann surface $ S_f $ depend on choice of point $ z_0 \in \mathbb{C} $ near which $ f $ initially defined?
+	
+% picture
+	\begin{defn}
+		Two paths $ \gamma, \gamma^\prime : \lbrack 0,1 \rbrack \longrightarrow U \subset \mathbb{C} $ with $ \gamma(0) = z_0 = \gamma^\prime (0) $ and $ \gamma(1) = z_1 = \gamma^\prime (1) $ are \emph{homotopic} if there is a continuous map
+		\[ h: \lbrack 0,1 \rbrack \times \lbrack 0,1 \rbrack \longrightarrow U \]
+		such that 
+		\begin{enumerate}
+			\item [(i)] $ h(0,t) = \gamma(t) $ and $ h(1,t) = \gamma^\prime(t), \forall t \in \lbrack 0,1 \rbrack $
+			\item [(ii)] $ h(s,0) = z_0$ and $h(s,1) = z_1, \forall s \in \lbrack 0,1 \rbrack $
+		\end{enumerate}  
+	We write $ \gamma \simeq \gamma^\prime $ when $ \gamma $ and $ \gamma^\prime $ are homotopic to each other.
+	
+%picture
+
+	\end{defn}
+
+
+
+
+
+
+\end{document} 
