@@ -2,6 +2,9 @@
 \usepackage{amsmath,amsthm,amssymb}
 \usepackage{enumerate}
 \usepackage[all]{xy}
+\usepackage{tikz, float}
+\usetikzlibrary{decorations.pathreplacing}
+
 \date{March 2017}
 \title{MATH399: Riemann Surface}
 \author{Xinran Yu}
@@ -38,8 +41,6 @@
 	\begin{proof}
 		Expand $ f $ as a power series about point $ a \in U $. All coefficients vanish. So $ f = 0 $ whenever power series converges.
 	\end{proof}
-
-	\textbf{ILLUSTRATION NEEDED}
 	
 	\subsection{Analytic continuation}
 	\begin{ex}
@@ -71,6 +72,27 @@
 		\item $ \gamma(0) = z_0 $;
 		\item f has an analytical continuation along $ \gamma $.
 	\end{enumerate}
+
+    % picture 1
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+        % path gamma and neighbourhoods
+            \draw (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
+            \draw[dashed] (0,0) circle [radius=1] node [left] {$ D $}
+            (0.7,1)  circle [radius=0.55] 
+            (1.3,1.6) circle [radius=0.6] 
+            (2,2) circle [radius=0.7] 
+            (3,2) circle [radius=0.75] 
+            (4,1.7) circle [radius=0.7] 
+            (5,1.3) circle [radius=0.6] 
+            (6,1) circle [radius=0.6] node [below] {$ z_1 $};
+        % labelling start- and end-points
+            \node[inner sep=1.5pt, fill, circle, label = {270:$ z_0 $}] at (0,0) (point) {} 
+            node[inner sep=1.5pt, fill, circle] at (6,1) (point) {};
+        \end{tikzpicture}
+        \caption{analytic continuation}
+    \end{figure}
 
 	\begin{defn}
 		For each closed subset $ K \subset \lbrack 0,1 \rbrack $, and each $ U \in \mathbb{C} $ open, the subset
@@ -137,12 +159,71 @@
 	\begin{claim}
 		This is an open subset of $ \pi^{-1}(U) $ (hence of S).
 	\end{claim}
-
+    
+    % picture 2
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+            \draw (0,0.5) ellipse (25pt and 8pt) 
+            (0,5) ellipse (25pt and 8pt) 
+            (0,4.2) ellipse (25pt and 8pt)
+            (0,2.6) ellipse (25pt and 8pt);
+            \draw[fill=gray!20] (0,3.4) ellipse (25pt and 8pt);
+            \node[inner sep=1.5pt, fill, circle, label={0:$ \lbrack \gamma \rbrack $}] at (-0.1,3.4) (point) {};
+            \draw[->] (0,2.1) -- (0,0.95);
+            \node[left] at(0,1.5) {$ \pi $} node [below] at (0,0) {$ U $} node [left] at (-1,3.4) {$ q(U_\gamma) $};
+            \draw[decoration = {brace, raise = 5pt}, decorate] (1.25,5) -- node [right = 6pt] {$ ~\pi^{-1}U $} (1.25,2.5);
+        \end{tikzpicture}
+        \caption{}
+    \end{figure}
+    
 	Suppose $ \gamma^{\prime} $ is a path in $ P $ such that $ \gamma^{\prime}(1) = U $ and the analytic continuation $ f_{ \gamma^{\prime} } $ agrees with $ f_{ \gamma } $ in $ U $.
+	
+	% picture 3
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+        %neighbourhood U
+            \draw[dashed,fill=gray!20] (6,1) circle [radius=1] node [right] {$ U $};
+        % path gamma and gamma'
+            \draw (0,0) .. controls (0.5,0.25) and     (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
+            \draw (0,0) .. controls (1,-1) and (2,-1) .. (3,0) .. controls (4,1) and (5,0) ..  (6,1);
+        % labelling start-, end-points and paths
+            \node[inner sep=1.5pt, fill, circle, label = {180:$ z_0 $}] at (0,0) (point) {}
+            node[inner sep=1.5pt, fill, circle,label = {-90:$ z_1 $}] at (6,1) (point) {}
+            node [above] at (2,2) {$ \gamma $} node [below] at (3.2,0) {$ \gamma^\prime $};
+        \end{tikzpicture}
+        \caption{analytic continuations agree in $ U $.}
+    \end{figure}
 
 % notes-p.16
 	Suppose we can analytically continue $ f $ along $ \gamma $. This means that we can cover $ \gamma(\lbrack 0,1 \rbrack) $ by finitely many disks $ D_0, D_1, D_2,..., D_n $ such that there is an analytic function $ f_i $ defined in $ D_i $ and
 	\[ \left. f_i \right|_{D_i \cap D_{i+1}} = \left. f_{i+1} \right|_{D_i \cap D_{i+1}} \]
+
+    % picture 4
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+        % draw a path
+            \draw (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
+        % neighbourhoods
+            \draw[dashed] (0,0) circle [radius=1]
+            (0.7,1)  circle [radius=0.55] 
+            (1.3,1.6) circle [radius=0.6] 
+            (2,2) circle [radius=0.7] 
+            (3,2) circle [radius=0.75] 
+            (4,1.7) circle [radius=0.7] 
+            (5,1.3) circle [radius=0.6] 
+            (6,1) circle [radius=0.6];
+        % labelling neighbourhoods and points
+            \node[above] at (-0.4,0) {$ D_0 $} node[above] at (0.5,0.9) {$ D_1 $} node[above] at (6,1) {$ D_n $}
+            node[inner sep=1.5pt, fill, circle, label = {270:$ \gamma(t_0) $}] at (0,0) (point) {} 
+            node[inner sep=1.5pt, fill, circle, pin={135:$ \gamma(t_1) $}] at (0.5,0.7) (point) {}
+            node[inner sep=1.5pt, fill, circle, pin={105:$    \gamma(t_2) $}] at (0.95,1.325) (point) {}
+            node[inner sep=1.5pt, fill, circle] at (6,1) (point) {};
+        \end{tikzpicture}
+        \caption{cover $ \gamma $ by finitly many disks}
+    \end{figure}
 
 	Choose closed intervals $ \lbrack t_i, t_{i+1} \rbrack $ such that $ 0 < t_0 < t_1 < ... < t_{n+1} < 1$ and
 	\begin{align*}
@@ -335,9 +416,8 @@
 	\section{}
 	How much does a Riemann surface $ S_f $ depend on choice of point $ z_0 \in \mathbb{C} $ near which $ f $ initially defined?
 	
-% picture
 	\begin{defn}
-		Two paths $ \gamma, \gamma^\prime : \lbrack 0,1 \rbrack \longrightarrow U \subset \mathbb{C} $ with $ \gamma(0) = z_0 = \gamma^\prime (0) $ and $ \gamma(1) = z_1 = \gamma^\prime (1) $ are \emph{homotopic} if there is a continuous map
+		Two paths $ \gamma, \gamma^\prime : \lbrack 0,1 \rbrack \to U \subset \mathbb{C} $ with $ \gamma(0) = z_0 = \gamma^\prime (0) $ and $ \gamma(1) = z_1 = \gamma^\prime (1) $ are \emph{homotopic} if there is a continuous map
 		\[ h: \lbrack 0,1 \rbrack \times \lbrack 0,1 \rbrack \longrightarrow U \]
 		such that 
 		\begin{enumerate}
@@ -345,14 +425,65 @@
 			\item [(ii)] $ h(s,0) = z_0$ and $h(s,1) = z_1, \forall s \in \lbrack 0,1 \rbrack $
 		\end{enumerate}  
 	We write $ \gamma \simeq \gamma^\prime $ when $ \gamma $ and $ \gamma^\prime $ are homotopic to each other.
-	
-%picture
+    
+    % picture 5
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+        % neighbourhood with irregular shape
+            \draw[dashed, fill=gray!20]  plot[smooth, tension=0.7] coordinates { (0.5,3) (1,4.5) (2,5) (4,5) (6,4) (8,4) (8.5,2) (8,1) (6,0) (4,0.8) (1,1.5) (0.5,3) };
+        % paths gamma, gamma' and gamma_s
+            \draw (2,4) .. controls (5,3.25) and (5,4.5).. (7,2) node[left] at (4,4) { $ \gamma $};
+            \draw (2,4) .. controls (3,1) .. (5,1.5) .. controls (5,1.5) ..  (7,2) node [above] at (6,1) {$ \gamma^\prime $};
+            \draw[dashed] (2,4) .. controls (3,3) and (4,4) .. (7,2) node[below] at (5,3) {$ \gamma_s $};
+            \node[below] at (6,5) {$ U $};
+        % points
+            \node[inner sep=1.5pt, fill, circle, label = {180:$ z_0 $}] at (2,4) (point) {} 
+            node[inner sep=1.5pt, fill, circle, label={45:$ z_1 $}] at (7,2) (point) {};
+        \end{tikzpicture}
+        \caption{paths in $ U $}
+    \end{figure}
 
 	\end{defn}
+	\begin{lem}
+		Suppose $ \gamma, \gamma^\prime : \lbrack 0,1 \rbrack \to \mathbb{C} $ with $ \gamma(0) = z_0 = \gamma^\prime (0) $ and $ \gamma(1) = z_1 = \gamma^\prime (1) $ are homotopic in some open subset $ U \subset \mathbb{C} $ in which an analytic continuation of $ f $ is defined. Then
+		\[ \lbrack \gamma \rbrack = \lbrack \gamma^\prime \rbrack \in S_f \]
+	\end{lem}
+	\begin{proof}
+		Let $  h: \lbrack 0,1 \rbrack \times \lbrack 0,1 \rbrack \to U $ be the homotopy and let 
+		\begin{align*}
+			\gamma_s:  \lbrack 0,1 \rbrack &\longrightarrow U \\
+			t &\longmapsto h(s,t)
+		\end{align*} 
+		so $ \gamma_0 = \gamma $ and $ \gamma_1 = \gamma^\prime $. There is a map
+		\begin{align*}
+			\lbrack 0,1 \rbrack &\longrightarrow \pi^{-1}(z_1) \subset S_f \\
+			s &\longmapsto \lbrack \gamma_s \rbrack
+		\end{align*}
+		This map is locally constant. For $ s^\prime $ close to $ s $ we have $ \gamma_{s^\prime} $ close to $ \gamma_s $ and can use the same analytic continuation to define $ \lbrack \gamma_{s^\prime} \rbrack $ as $ \lbrack \gamma_s \rbrack $. 
 
-
-
-
+        % picture 6
+        \begin{figure}[H]
+            \centering
+            \begin{tikzpicture}
+            % neighbourhoods
+                \path[dashed, ultra thin, fill=gray!20] (0,2) circle [radius=1]
+                (1.3,1.8) circle [radius=0.6] 
+                (2.3,1.7) circle [radius=0.7] 
+                (3.3,1.5) circle [radius=0.75]
+                (4.3,0.7) circle [radius=0.7] 
+                (5,0) circle [radius=0.6];
+            % paths
+                \draw (0,2) .. controls (3,1.25) and (3,2.5).. (5,0) node[left] at (3.6,1.8) { $ \gamma $};
+                \draw[dashed] (0,2) .. controls (1,1.7) and (2,2.7) .. (5,0) node[below] at (3.3,1.2) {$ \gamma_s $};
+            \end{tikzpicture}
+            \caption{ $ \gamma_{s^\prime} $ and $ \gamma_s $ can use the same analytic continuation }
+        \end{figure}
+    
+		Hence,
+		\[ \lbrack \gamma_{s^\prime} \rbrack = \lbrack \gamma_s \rbrack \]
+		However, $ \lbrack 0,1\rbrack $ is connected. So a locally constant function is constant.
+	\end{proof}
 
 
 \end{document} 
