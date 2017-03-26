@@ -2,8 +2,9 @@
 \usepackage{amsmath,amsthm,amssymb}
 \usepackage{enumerate}
 \usepackage[all]{xy}
-\usepackage{tikz, float}
-\usetikzlibrary{decorations.pathreplacing}
+\usepackage{tikz,float,chngcntr}
+\usetikzlibrary{decorations.pathreplacing,decorations.markings}
+
 
 \date{March 2017}
 \title{MATH399: Riemann Surface}
@@ -20,15 +21,47 @@
 \newtheorem{remark}[thm]{Remark}
 \newtheorem{claim}[thm]{Claim}
 \newtheorem{ex}[thm]{Example}
-	
 
-	
+
+\counterwithin{figure}{section}	
+% code for arrow in the middle of a path
+\tikzset{
+  % style to apply some styles to each segment of a path
+  on each segment/.style={
+    decorate,
+    decoration={
+      show path construction,
+      moveto code={},
+      lineto code={
+        \path [#1]
+        (\tikzinputsegmentfirst) -- (\tikzinputsegmentlast);
+      },
+      curveto code={
+        \path [#1] (\tikzinputsegmentfirst)
+        .. controls
+        (\tikzinputsegmentsupporta) and (\tikzinputsegmentsupportb)
+        ..
+        (\tikzinputsegmentlast);
+      },
+      closepath code={
+        \path [#1]
+        (\tikzinputsegmentfirst) -- (\tikzinputsegmentlast);
+      },
+    },
+  },
+  % style to add an arrow in the middle of a path
+  mid arrow/.style={postaction={decorate,decoration={
+        markings,
+        mark=at position .5 with {\arrow[#1]{stealth}}
+      }}},
+}
+
+
 \begin{document}
-
-	%\includegraphics[width=2in]{picture.pdf}
 	\maketitle
 	\section{Holomorphic Function and Analytic Continuation}
 	In the first section, we will recall several important results from complex analysis. Then, we introduce the most fundamental concept used in Riemann surface, that is, \emph{analytic continuation}. 
+	
 	\begin{defn}[Differentiable, holomorphic]
 		Let $ D $ be an open subset of the complex plane $ \mathbb{C} $. Given a complex-valued function $ f : D \to \mathbb{C} $. $ f $ is said to be \emph{differentiable} at a point $ z_0 \in \mathbb{C}$ if
 		\[ \lim\limits_{\Delta z \to 0} \frac{ f(z_0 + \Delta z) - f(z_0) }{\Delta z} \]
@@ -36,13 +69,15 @@
 		$ f $ is called \emph{holomorphic in $ U \subset D $} if it is differentiable at every point $ z \in U $. \\
 		$ f $ is called \emph{holomorphic at a point $z_0 \in D $} if it is differentiable in a neighbourhood of $ z_0 $. \\
 	\end{defn}
-	
+
 	The following theorem allow us to expand holomorphic function into a complex series.
+	
 	\begin{thm}[Taylor's theorem]
 		Let $ f $ be a holomorphic function defined on a open set $ D $. Given a point $ a \in D $. Then there exists constants $ c_n $ such that
 		\[ f(z) = \sum_{n=0}^{\infty} c_n (z-a)^n \]
 		for every $ z \in D $ and constants $ c_n =\frac{f^{(n)}(z)}{n!} $.
 	\end{thm}
+
 	\begin{proof}
 		By Cauchy integral formula, 
 		\[ f(z) = \frac{1}{2\pi i} \int_{\Gamma} \frac{f(w)}{w-z} \,\mathrm{d}w \]	
@@ -57,6 +92,7 @@
 		Apply Cauchy integral formula again, we have 
 		\[ c_n = \frac{1}{2\pi i} \int_{\Gamma} \frac{f(w)}{(w-a)^{n+1}} \,\mathrm{d}w = \frac{f^{(n)}(z)}{n!} \]
 	\end{proof}	
+
 	Taylor series converges in a neighbourhood of $ a $ where the function remains holomorphic. Moreover, this series is unique. Suppose there is another power expansion, $ f(z) = \sum_{n=0}^{\infty} b_n (z-a)^n $, and consider integral $ \int_{\Gamma} \frac{f(z)}{(z-a)^k} \,\mathrm{d}z = \sum_{n=0}^{\infty}b_n \int_{\Gamma} (z-a)^{n-k} \,\mathrm{d}z $. Note that $ \int_{\Gamma} (z-a)^{n-k} \,\mathrm{d}z $ vanishes when $ n-k \neq -1 $ and equals to $ 2\pi i$ when $ n-k = -1 $. So, $ \int_{\Gamma} \frac{f(z)}{(z-a)^k} \,\mathrm{d}z = b_{k-1} \cdot 2\pi i \implies b_{k-1} = \frac{f^{(k-1)}(z)}{(k-1)!} = c _{k-1} $.
 
 	\begin{thm}[Identity theorem]
@@ -71,6 +107,7 @@
 		such that $ f(z) = (z-a)^k g(z) $. 
 		Since $ g $ is continuous at $ a $ and $ g(a) = c_k \neq 0 $, there exists $ \epsilon > 0 $ such that $ g \neq 0 $ in the neighbourhood $ B_\epsilon(a)$. But $ (z-a)^k $ is non-zero when $z \in B_\epsilon(a)\backslash \lbrace a\rbrace $, which implies $ f(z) \neq 0 $ when $z \in B_\epsilon(a)\backslash \lbrace a\rbrace $. So $ a $ is an isolated point. This contradicts the assumption that $ U $ has a limit point in $ D $.
 	\end{proof}
+
 	Generally, given two complex function $ f: D \to \mathbb{C} $ and $ g: E \to \mathbb{C} $, and assume they agree in an open subset $ U $ where they are both defined. Applying the identity theorem to their difference $ f-g $, we have 
 	\[ \left. f \right|_{ D \cap E } = \left. g \right|_{ D \cap E } \]
 	
@@ -85,8 +122,9 @@
 		Consider a point $ z_0 \neq 0 $, with $ |z_0| < 1 $. Since the power series converges at every point in the disc $ D_1(0) $, we can evaluate $ \frac{f^{(n)}(z_0)}{n!}$ for any integer n, which allows us to write a power series expansion for $ f(z+z_0)$ as
 		\[ f(z+z_0) = \sum_{n=0}^{\infty} \frac{f^{(n)}(z_0)}{n!} (z+z_0-z_0)^n = \sum_{n=0}^{\infty} \frac{f^{(n)}(z_0)}{n!} z^n  \]
 		this series converges in the disc $ D_R (z_0) $, where $ R $ is the distance from $ z_0 $ to the nearest pole, in this case it is $(1,0)$. 
-	
-% picture 1-1
+		
+% Figure 1.1:  Analytically continue function f = 1/1-z
+
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -104,22 +142,21 @@
         node[inner sep=1.5pt, fill, circle, label = {-90: $ z_0 $}] at (0.3,0.7) (point) {}
         node[inner sep=1.5pt, fill, circle, label = {-45: $ z_1 $}] at (0.6,1.2) (point) {};
     \end{tikzpicture}
-    \caption{Analytic continuation of $ f = \frac{1}{1-z}$}
+    \caption{Analytically continue function $ f = \frac{1}{1-z}$}
 \end{figure}
-		
+
 		By the identity theorem, we can extended the domain of function to $ D_1(0) \cap D_R (z_0) $. We can continue this process by choosing next point $ z_1 \in D_R (z_0) $, and finally we will obtain $ \mathbb{C} \setminus \lbrace 1 \rbrace $ as the domain of $ f = \frac{1}{1-z}$.
 	\end{ex}
 
-
-
 	\begin{defn}[Analytic continuation]
-		Let $ f $ be a holomorphic function defined on a neighbourhood of a point $ z_0 \in \mathbb{C} $.  Let $ \gamma:[0,1] \to \mathbb{C} $ be a continuous path with $ \gamma(0) = z_0 $. An \emph{analytic continuation} of $ f $ along $ \gamma $ consists of a family of holomorphic functions $ f_t $ for $ t \in [0,1] $, where $ f_t $ is defined on a neighbourhood $ U_t $ of $ \gamma(t) $ such that 
+		Let $ f $ be a holomorphic function defined on a neighbourhood of a point $ z_0 \in \mathbb{C} $.  Let $ \gamma:[0,1] \to \mathbb{C} $ be a continuous path with $ \gamma(0) = z_0 $. Given $ 0 = t_0 < t_1 < ... < t_n = 1 $ for some integer $ n $. An \emph{analytic continuation} of $ f $ along $ \gamma $ consists of a family of holomorphic functions $ f_i $ defined on a neighbourhood $ D_i $ of $ \gamma(t_i) $ such that 
 		\begin{enumerate}
-			\item[(i)] $ f_0 = f $ on some neighbourhood of $ z_0 $;
-			\item[(ii)] for every $ t_0 \in [0,1] $ there is a $ \delta_{t_0} $ such that if $ |t-t_0| < \delta_{t_0} $, the functions $ f_t $ and $ f_{t_0} $ are equal on their common domain of definition $ U_t \cap U{t_0} $.
+			\item[(i)] $ f_0 = f $ on some neighbourhood $ D_0 \ni z_0 $;
+			\item[(ii)] for every $ i $, the functions $ f_i $ and $ f_{i+1} $ are equal on their common domain of definition $ D_i \cap D_{i+1} $.
 		\end{enumerate}
 	\end{defn}
-% picture 1-2
+
+% Figure 1.2:  Analytic continuation along path γ
 
 \begin{figure}[H]
     \centering
@@ -132,7 +169,7 @@
         \node[inner sep=1.5pt, fill, circle, pin= {-35:$ ~~z_0 = \gamma(0) $}] at (0,0) (point) {} 
         node[pin = {-135:$ f $ initially defined here}] at (-0.4,-0.5) (point) {};
     % draw a path
-        \draw (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
+        \draw[postaction={on each segment={mid arrow}}] (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
     % second step 
         \node[inner sep=1.5pt, fill, circle, pin = {-35:$ \gamma(t_1) $}] at (0.48,0.6) (point) {} 
         node[pin = {95:$ f_{t_1} $ is defined here}] at (0.6,1) (point) {};
@@ -148,42 +185,135 @@
         \node[inner sep=1.5pt, fill, circle, pin={-35:$ \gamma(1) $}] at (6,1) (point) {}
         node[below] at(3,1){path $\gamma$};
     \end{tikzpicture}
-    \caption{analytic continuation}
+    \caption{Analytic continuation along path $ \gamma $}
 \end{figure}
 
-\begin{ex} 
+	\begin{ex} 
 		\label{squarerootex}
-		\begin{enumerate}\
-			\item[(i)]
-			$ f(z) = \sum_{\infty}^{n=0} z^n = 1 + z + z^2 $ has radius of convergence 1 and $ f(z) = \frac{1}{1-z} $ for $ \left| z \right| < 1$. Identity theorem implies that functions defined by expansions about point on path agree whenever they are defined.
-			\item[(ii)]Consider the function
+		Consider the function
 			\begin{align*}
 				f: \lbrace z \in \mathbb{C} \mid \Re z > 0 \rbrace &\longrightarrow \mathbb{C}\\
 				z &\longmapsto \sqrt{z}
 			\end{align*}
-			If we analytically continue it along $ \gamma = e^{i \pi t} $, then we find the continuation is $ e^{\frac{i\pi}{2}} = i $ at $ z = i $.\\
-			If we analytically continue it along $ \gamma = e^{-i \pi t} $, the continuation is $ e^{-\frac{i\pi}{2}} = -i $ at $ z = i $.
-			
-% picture 1-1
 
+		Taylor expansion of function $ f $ around $ z_0 = 1 $ is 
+		\[ f(z) = \sum_{n=0}^{\infty} c_n (z-1)^n \]
+		where $ c_n = \frac{f^{(n)}(1)}{n!} = \frac{1}{n!}\prod_{i=0}^{n} (-\frac{2i-3}{2}) $ are constants. The series converges when $ |z-1| < 1 $, so we can analytically continue $ f $ along two different paths starting from $ z_0=1 $.
+		
+		Let $ \gamma_1 = e^{i \pi t}$ and $ \gamma_2 (t) = e^{-i \pi t} $ both with $ t\in[0,1] $ (shown below).
+		
+% Figure 1.3:  Paths γ1 and γ2
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    % draw axes
+        \path[fill=gray!20] (2,-2) rectangle (4,2) 
+        (7,-2) rectangle (9,2);
+        \draw[->] (0,0) to (4,0) node[below] {$x$};
+        \draw[dashed, thick,->] (2,-2) to (2,2) node[left] {$y$};
+        \draw[->](5,0) to (9,0) node[below] {$x$};
+        \draw[dashed, thick,->](7,-2) to (7,2) node[left] {$y$};
+        
+    % draw paths
+        \draw[postaction={on each segment={mid arrow}}] (3,0) arc (0:180:1cm) node at (3.3,1.3) {$\gamma_1(t) = e^{\pi it}$}
+        (8,0)  arc (0:-180:1cm) node at (8.5,-1.3) {$\gamma_2(t) = e^{-\pi it}$};
+    % node points -1, 0, 1, i, -i
+        \node[inner sep=1.5pt, fill, circle, label = {-90: -1}] at (1,0) (point) {}
+        node[inner sep=1.5pt, fill, circle, label = {-45: 0}] at (2,0) (point) {}
+        node[inner sep=1.5pt, fill, circle, label = {-90: 1}] at (3,0) (point) {}
+        node[inner sep=1.5pt, fill, circle, label = {-45: $ i $}] at (2,1) (point) {};
+        \node[inner sep=1.5pt, fill, circle, label = {: -1}] at (6,0) (point) {}
+        node[inner sep=1.5pt, fill, circle, label = {135: 0}] at (7,0) (point) {}
+        node[inner sep=1.5pt, fill, circle, label = {: 1}] at (8,0) (point) {}
+        node[inner sep=1.5pt, fill, circle, label = {135: $ -i $}] at (7,-1) (point) {};
+    \end{tikzpicture}
+    \caption{Paths $\gamma_1$ and $\gamma_2$}
+\end{figure}
+
+		\begin{enumerate}
+			\item [(i)] Analytic continuation along $ \gamma_1 $ gives $ e^{\frac{i\pi}{2}} = i $ at $ z = i $.
+			\item[(ii)] Analytic continuation along $ \gamma_2 $ gives $ e^{-\frac{i\pi}{2}} = -i $ at $ z = i $.
 		\end{enumerate}
 	\end{ex}
+
+	\subsection{Define Riemann surface of square root function}
+	In Example \ref{squarerootex}, we see analytic continuations along paths $ \gamma_1 $ and $ \gamma_2 $ give $ f(-1) = i $ and $ f(-1) = -i $ respectively. Multi-value of square root arises because adding $ 2\pi $ to the argument of $ z $ gives the same point in the complex plane.
+	
+	There are two ways to deal with this problem.
+	\begin{enumerate} 
+		\item [(A)] We could put a \emph{branch cut} in the complex plane along the negative real-axis and forbid $ z $ to pass through cut. 
+		\\
+		More precisely, if we restrict the argument of $ z $ to $ (-\pi, \pi] $, then
+		\[ f(z) = \sqrt{z} = \sqrt{r e^{i \theta}} = r^{\frac{1}{2}} e^{\frac{i\theta}{2}} \] 
+		where $ \theta \in (-\pi, \pi] $.
+		So $ f(-1) = e^{\frac{i\pi}{2}} = i $. 
+		\\
+		If we restrict the argument of $ z $ to $ (-3\pi,-\pi] $, then 
+		\[ f(z) = \sqrt{z} = \sqrt{r e^{i \varphi}} = r^{\frac{1}{2}} e^{\frac{i\varphi}{2}} \] 
+		where $ \varphi \in (-3\pi, -\pi] $ and $ \varphi = \theta - 2\pi $. So $ f(-1) = e^{-\frac{i\pi}{2}} = -i $. 
+		
+		\item [(B)] Consider two copies of complex plane $ \mathbb{C}^+ $ and $ \mathbb{C}^- $. In $ \mathbb{C}^+ $ we define $ f_1(z) = \sqrt{z} $. By analytic continuation, for $ z = x<0 $, $ f_1(z) = i\sqrt{-x}$ on side $ a $ and $ f_1(z) = -i\sqrt{-x}$ on side $b$ (Figure 1.4 left). \\
+		In $ \mathbb{C}^- $ we define $ f_2(z) = -\sqrt{z} $. Then for $ z = x<0 $, $ f_2(z) = -i\sqrt{-x}$ on side $ b $ and $ f_2(z) = i\sqrt{-x}$ on side $a$ (Figure 1.4 right).
+		
+		So we can glue the two side labelled '$a$' and the two side labelled '$b$' to form a \emph{Riemann surface} for square root function.
+		
+% Figure 1.4:  Riemann surface for square root function
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        % complex plane
+        \path[fill=gray!20] (0,-2) rectangle (4,2) node[above] at(3.5,1.3) {$ \mathbb{C}^{+} $}
+        (5,-2) rectangle (9,2) node[above] at(8.5,1.3) {$ \mathbb{C}^{-} $}; 
+        \draw (0,0.05) to (2,0.05)
+        (5,-0.05) to (7,-0.05);
+        \draw[dashed](0,-0.05) to (2,-0.05)
+        (5,0.05) to (7,0.05);
+        \node[inner sep=1.5pt, fill, circle, label = {-90: 0}] at (2,0) (point) {}
+        node[inner sep=1.5pt, fill, circle, label = {-90: 0}] at (7,0) (point) {};
+        \node[above] at(1,0) {$a$}
+        node[below] at(1,0) {$b$}
+        node[above] at(6,0) {$b$}
+        node[below] at(6,0) {$a$};
+    % glue a with a, b with b
+        \draw[thick,red!80,<->] (0.8,0.05) .. controls (2.4,0.5) .. (3.6,0) .. controls (5,-0.5) .. (5.8,-0.05);
+        \draw[thick,dashed,blue!80,<->] (1.2,-0.05) .. controls (2.5,-0.5) .. (3.7,0) .. controls (5,0.5) .. (6.2,0.05);
+    \end{tikzpicture}
+    \caption{Riemann surface of square root function}
+\end{figure}
+	\end{enumerate}
+	In general, we consider analytic continuation of function along all possible paths, and glue disks where continuations are defined to form Riemann surface. We will discuss this construction of a Riemann surface in next section.
 	
 % section 2, notes-p.13
 	\section{Riemann surface of a holomorphic function}
+	We start this section by giving definition of a Riemann surface.
+	\begin{defn}[Riemann surface]
+		Let $ (X,\tau_X) $ be a Hausdorff topological space. A \emph{Riemann surface} is given by the following data:
+		\begin{enumerate}
+			\item [(i)] A collection of open sets $ U_i \subset X $ which cover $ X $, i.e. $ \bigcap_i U_i = X $; 
+			\item [(ii)] For each $ U_i $, there is a homeomorphism 
+			\[ \varphi_i: U_i \longrightarrow \varphi(U_i) \]
+			where $ \varphi(U_i) $ is an open subset in $ \mathbb{C} $. The maps $ \varphi_i $ are referred as \emph{charts}.
+			\item [(iii)] Whenever $ U_i \cap U_j \neq \varnothing $, there is a transition function \[ \varphi_j \circ {\varphi}_i^{-1}: \varphi_i(U_i \cap U_j) \longrightarrow \varphi_j(U_i \cap U_j) \]
+			and the transition function is holomorphic.
+		\end{enumerate}
+	\end{defn}
+	
+	As it mentioned before, we would like to consider all possible paths starting from the same point along which we can analytically continue the function. So we introduce a set containing all such paths and consider the equivalent classes of the set.
+	
 	Suppose there is an open subset $ D \subset \mathbb{C} $, and a holomorphic function $ f: D \to \mathbb{C} $.
 	Fix $ z_0 \in D $, and let $ P $ be a collection of path $ \gamma: \lbrack0,1\rbrack \to \mathbb{C} $, satisfying:
-	\begin{enumerate}[(i)]
-		\item $ \gamma(0) = z_0 $;
-		\item f has an analytical continuation along $ \gamma $.
+	\begin{enumerate}
+		\item[(i)] $ \gamma(0) = z_0 $;
+		\item[(ii)] $ f $ has an analytical continuation along $ \gamma $.
 	\end{enumerate}
-	
-% picture 1
+
+% Figure 2.1:  Analytic continuation
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
     % path gamma and neighbourhoods
-        \draw (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
+        \draw[postaction={on each segment={mid arrow}}] (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
         \draw[dashed] (0,0) circle [radius=1] node [left] {$ D $}
         (0.7,1)  circle [radius=0.55] 
         (1.3,1.6) circle [radius=0.6] 
@@ -194,30 +324,37 @@
         (6,1) circle [radius=0.6] node [below] {$ z_1 $};
     % labelling start- and end-points
         \node[inner sep=1.5pt, fill, circle, label = {270:$ z_0 $}] at (0,0) (point) {} 
-        node[inner sep=1.5pt, fill, circle] at (6,1) (point) {};
+        node[inner sep=1.5pt, fill, circle] at (6,1) (point) {}
+        node[above] at(4,0) {$ \gamma $};
     \end{tikzpicture}
-    \caption{analytic continuation}
+    \caption{Analytic continuation}
 \end{figure}
-	
+
 	\begin{defn}
-		There is an \emph{equivalence relation} $ \sim $ on $ P $. $ \gamma_0 \sim \gamma_1$ is defined by the following properties:
+		There is an \emph{equivalence relation} $ \sim $ on $ P $ where $ \gamma_0 \sim \gamma_1$ is defined by the following properties:
 		\begin{enumerate}
-			\item[(i)] $ \gamma_0 $ and $ \gamma_1 $ have the same endpoint $ z_1 \in \mathbb{C} $: $ \gamma_0(1) = \gamma_1(1) = z_1 $; 
-			\item[(ii)] $ \exists V $, an open neighbourhood of $ z_1$, such that analytic continuations of $ f_0 $ and $ f_1 $ along $ \gamma_0 $ and $ \gamma_1 $, respectively, agree in that	neighbourhood. That is,
+			\item[(i)] $ \gamma_0 $ and $ \gamma_1 $ have the same endpoint $ z_1 \in \mathbb{C} $, i.e. $ \gamma_0(1) = \gamma_1(1) = z_1 $; 
+			\item[(ii)] $ \exists V $, an open neighbourhood of $ z_1$, such that analytic continuations of $ f_0 $ and $ f_1 $ along $ \gamma_0 $ and $ \gamma_1 $ respectively, agree in the neighbourhood. That is,
 			\[ \left. f_0 \right|_V = \left. f_1 \right|_V \]
 		\end{enumerate}
-		The \emph{equivalence class} of $ \gamma \in P $ is defined to be $ [\gamma]= \lbrace \gamma^\prime \in P \mid \gamma \sim \gamma^\prime \rbrace $, and the collection of equivalent classes of paths $ \gamma \in P $ is denoted as $ S $, i.e. $ S = P / \sim = \lbrace [\gamma] \mid \gamma \in P \rbrace $.
+		The \emph{equivalence class} of $ \gamma \in P $ under $ \sim $, is defined as $ [\gamma]= \lbrace \gamma^\prime \in P \mid \gamma \sim \gamma^\prime \rbrace $. 
+		\\
+		The collection of all possible equivalence classes under $ \sim $  is the \emph{quotient set} of $ P $. It is denoted as $ S $, i.e. $ S = P / \sim = \lbrace [\gamma] \mid \gamma \in P \rbrace $. 
 	\end{defn}
-
-	In order to give $ S $ the structure of a Riemann surface, we need to make $ S $ into a topological space. We do this by two steps. First, making $ P $ into a space endowed with compact open topology. Second, use the quotient map from $ P $ to $ S $ to get a quotient topology on $ S $.
+	
+\subsection{Topological space on the quotient set}
+	In order to give $ S $ the structure of a Riemann surface, $ S $ need to be made into a topological space. We do this by making $ P $ into a space endowed with compact open topology. Then, applying a quotient map from $ P $ to $ S $ to give a quotient topology on $ S $.
 
 	\begin{defn}
-		For each closed subset $ K \subset [0,1] $, and each $ U \in \mathbb{C} $ open, the subset
-		\[ P_{K,U} = \lbrace \gamma \in P \mid \gamma(K) \subset U\rbrace \] is called \emph{open}. A general open subset is obtained by taking arbitrary union and finite intersections of these $ P_{K,U} $'s. 
+		For each closed subset $ K \subset [0,1] $, and each open subset $ U \subset \mathbb{C} $, the set
+		\[ P_{K,U} = \lbrace \gamma \in P \mid \gamma(K) \subset U\rbrace \subset P \] 
+		is called \emph{open}.
 	\end{defn}
 
-	Note that $ K $ is compact as it is a closed and bounded subset of $ \mathbb{R} $. Hence, collecting all open subsets of $ P $ gives the \emph{compact-open topology} as required.
+	For example, taking $ K = [0,1] $ and $ U = \lbrace z \mid |z|<1 \rbrace $ subset of path in $ U $ is open; if $ K = \lbrace \frac{1}{2} \rbrace $, then subset $ P_{K,U}$ of paths contains paths with its midpoint in $ U $.
 
+	Note that $ K $ is compact as it is a closed and bounded subset of $ \mathbb{R} $. A general open subset is obtained by taking arbitrary union and finite intersections of these $ P_{K,U} $. The collection of all open subsets of $ P $ is the \emph{compact-open topology} as required.
+	Now, define the quotient map on the quotient set $ S $.
 	\begin{defn}
 		Let S be the collection of equivalence classes $ [\gamma]_\sim $. The \emph{quotient map} $ q $ is defined by:
 		\begin{align*}
@@ -230,7 +367,7 @@
 	\begin{defn}
 		A subset $ W \subset S $ is \emph{open} if and only if $ q^{-1}(W) \subset P $ is open. The collection of all open subsets $ W $ gives a topology on $ S $.
 	\end{defn}
-	
+	For a fixed path $ \gamma \in P $
 % notes-p.14
 	There are maps
 	\[\begin{matrix}
@@ -247,14 +384,15 @@
 	
 	\begin{remark}\
 		\begin{enumerate}
-			\item[(i)] Note that $ \pi q (\gamma) = \gamma(1) $. The function is continuous because for any open subset $ U \subset \mathbb{C} $,
-			\[ P_{ \lbrace1\rbrace, U }= \lbrace \gamma \in P \mid \gamma(1) \in U \rbrace \subset P \]
-			is open, and the left hand side is exactly $ (\pi q)^{-1}(U)$.
-			\item[(ii)] It follows that $ \pi $ is also a continuous function. For any open subset $ U \subset \mathbb{C} $, $ (\pi q)^{-1}(U) = q^{-1} ( \pi^{-1}(U)) $ is open in $ P $. By the definition of open subsets in $ S $, $ \pi^{-1}(U) $ is also open.
+			\item[(i)] Note that $ \pi \circ q (\gamma) = \pi([\gamma]) = \gamma(1) $. Composition of functions is continuous because for every open subset $ U \subset \mathbb{C} $,
+			\[ {(\pi \circ q)}^{-1}(U) = \lbrace \gamma \in P \mid \gamma(1) \in U \rbrace = P_{ \lbrace1\rbrace, U } \subset P \]
+			is open.
+			\item[(ii)] It follows that $ \pi $ is also continuous. For every open subset $ U \subset \mathbb{C} $, $ {(\pi \circ q)}^{-1}(U) = q^{-1} ( \pi^{-1}(U)) $ is open in $ P $. By the definition of open subsets in $ S $, $ \pi^{-1}(U) $ is also open.
 		\end{enumerate}
 	\end{remark}
 	
-	Now we show that each $ [\gamma] \in S $ has an open neighbourhood $ V \ni [\gamma] $ such that
+\subsection{Homeomorphisms on the quotient set}
+	The next step is to give charts on the quotient set $ S $. Notice that $ S $ can be covered by neighbourhood of its elements. We want each $ [\gamma] \in S $ to have an open neighbourhood $ V \ni [\gamma] $ such that
 	\[\begin{matrix}
 		\xymatrix{
 			V \ar[r]^{ \left. \pi \right|_V } & \mathbb{C}
@@ -262,18 +400,14 @@
 	\end{matrix}\]
 	is a homeomorphism into an open subset of $ \mathbb{C} $.
 	
-	Given $ [\gamma] \in S $. Let $ U \subset \mathbb{C} $ to be a neighbourhood of $ \pi([\gamma]) = \gamma(1) $ in which analytic continuation along $ \gamma $ is defined. Then $ \pi^{-1}(U) $ consists of all equivalence classes of paths in $ P $ with endpoints in $ U $. It is open in $ S $ because $ \pi $ is continuous.
-	
-	% picture 1-2
-	
+	Given $ [\gamma] \in S $. Let $ U \subset \mathbb{C} $ be a neighbourhood of $ \pi([\gamma]) = \gamma(1) $ in which analytic continuation along $ \gamma $ is defined. Then $ \pi^{-1}(U) $ consists of all equivalence classes of paths in $ P $ with endpoints in $ U $. It is open in $ S $ as $ \pi $ is continuous.
+
 % notes-p.15
-	There is a subset of $ \pi^{-1}(U) $ consisting of paths in $ P $ where analytic continuation agrees with that along $ \gamma $ in $ U $.
-	
 	\begin{claim}
-		This is an open subset of $ \pi^{-1}(U) $ (hence of S).
+		There is a open subset of $ \pi^{-1}(U) $ (hence of $ S $) consisting of paths in $ P $ where analytic continuation agrees with that along $ \gamma $ in $ U $. 
 	\end{claim}
 
-% picture 2
+% Figure 2.2:  Equivalence classes of paths in P with endpoints in U 
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -291,10 +425,11 @@
 \end{figure}
 
 	\begin{proof}
-		\textbf{Step 1}: There exists an open subset $ U_\gamma \subset P $ containing $ \gamma $.\\
+		\textbf{Step 1}: There exists an open subset $ U_\gamma \subset P $ containing $ \gamma $.
+		
 		Suppose $ \gamma^\prime$ is a path with endpoint $ \gamma^\prime(1) $ located in $ U $. Also, suppose the analytic continuation $ f_{ \gamma^\prime } $ along $ \gamma^\prime$ agrees with the analytic continuation $ f_{ \gamma } $  along $ \gamma $ in $ U $.
 
-% picture 3
+% Figure 2.3:  Analytic continuations agree in U 
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -302,26 +437,33 @@
         \draw[dashed,fill=gray!20] (6,1) circle [radius=1] node[right] at(7,1.5) {$ U $};
         \draw[dashed,fill=gray!40] (6.3,0.8) circle [radius=0.3];
     % path gamma and gamma'
-        \draw (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
-        \draw (0,0) .. controls (1,-1) and (2,-1) .. (3,0) .. controls (4,1) and (5,0) ..  (6.3, 0.8);
+        \draw[postaction={on each segment={mid arrow}}] (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
+        \draw[postaction={on each segment={mid arrow}}] (0,0) .. controls (1,-1) and (2,-1) .. (3,0) .. controls (4,1) and (5,0) ..  (6.3, 0.8);
     % labelling start-, end-points and paths
         \node[inner sep=1.5pt, fill, circle, label = {180:$ z_0 $}] at (0,0) (point) {}
         node[inner sep=1.5pt, fill, circle, label = {90:$ \gamma(1) $}] at (6,1) (point) {}
         node[inner sep=1.5pt, fill, circle, pin = {-70:$ \gamma^\prime(1) $}] at (6.3,0.8) (point) {}
         node [above] at (2,2) {$ \gamma $} node [below] at (3.2,0) {$ \gamma^\prime $};
     \end{tikzpicture}
-    \caption{analytic continuations agree in $ U $.}
+    \caption{Analytic continuations agree in $ U $.}
 \end{figure}
-		
-% notes-p.16
-		We can analytically continue $ f $ along $ \gamma $. This means that we can cover $ \gamma(\lbrack 0,1 \rbrack) $ by finitely many disks $ D_0, D_1, D_2,..., D_n $ such that there is an analytic function $ f_i $ defined in $ D_i $ and
-		\[ \left. f_i \right|_{D_i \cap D_{i+1}} = \left. f_{i+1} \right|_{D_i \cap D_{i+1}} \]
 
-% picture 4
+% notes-p.16
+		If there is a analytic continuation of $ f $ along $ \gamma $, then we can cover $ \gamma(\lbrack 0,1 \rbrack) $ by finitely many discs $ D_0, D_1, \cdots, D_n $ s.t. there is an analytic function $ f_i $ defined in $ D_i $ and
+		\[ \left. f_i \right|_{D_i \cap D_{i+1}} = \left. f_{i+1} \right|_{D_i \cap D_{i+1}} \]
+		Choosing closed intervals $ [t_i, t_{i+1}] $ such that $ 0 < t_0 < t_1 < \cdots < t_{n+1} < 1$ and
+		\begin{align*}
+			\gamma( [t_0 , t_1] ) &\subset D_0\\
+			\gamma( [t_1 , t_2] ) &\subset D_1\\
+			\vdots\\
+			\gamma( [t_n , t_{n+1}] ) &\subset D_n
+		\end{align*}
+
+% Figure 2.4:  cover γ by finitely many discs
+
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
-    
     % draw a path
         \draw (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
     % neighbourhoods
@@ -340,46 +482,47 @@
         node[inner sep=1.5pt, fill, circle, pin={105:$    \gamma(t_2) $}] at (0.95,1.325) (point) {}
         node[inner sep=1.5pt, fill, circle] at (6,1) (point) {};
     \end{tikzpicture}
-    \caption{cover $ \gamma $ by finitly many disks}
+    \caption{cover $ \gamma $ by finitly many discs}
 \end{figure}
 
-			
-		Choose closed intervals $ [t_i, t_{i+1}] $ s.t. $ 0 < t_0 < t_1 < ... < t_{n+1} < 1$ and
+		Consider 
 		\begin{align*}
-			\gamma( [t_0 , t_1] ) &\subset D_0\\
-			\gamma( [t_1 , t_2] ) &\subset D_1\\
-			&...\\
-			\gamma( [t_n , t_{n+1}] ) &\subset D_n
-		\end{align*}
-		Consider $ U_\gamma = P_{ [t_0 , t_1] , D_0 } \cap P_{ [t_1 , t_2] , D_1 } \cap ... \cap P_{ [t_n , t_{n+1}] , D_n } \subset P $. 
-		It is open because each component of this intersection is an open subset in $ P $, i.e. $ P_{ [t_i , t_{i+1}] , D_i} \subset P $ is open $ \forall i = 0,1,...,n $. Also, note that $ U_\gamma $ contains $ \gamma $.
+			U_\gamma &= P_{ [t_0 , t_1] , D_0 } \cap P_{ [t_1 , t_2] , D_1 } \cap \cdots \cap P_{ [t_n , t_{n+1}] , D_n }\\
+			&= \bigcap_{i=0}^n P_{[t_i, t_{i+1}], D_i } \subset P
+		\end{align*} 
 		
-		By construction the analytic continuation $ f_{\gamma^\prime} $ for any $ \gamma^\prime \in U_\gamma $ agrees with $ f_\gamma $ in $ D_n $. $ \qed $
-
-		\textbf{Step 2}: $ q(U_\gamma) $ is open in $ S $.\\
-		We need to show that $ q^{-1}(q(U_\gamma)) $ is open in $ P $. For $ \gamma \in q^{-1}(q(U_\gamma)) $, if $ \gamma^\prime(1) \in D_n $ and analytic contination $ f_{ \gamma^\prime } $ agress with $ f_\gamma $ in $ D_n $, then, by the above argument, there is an open neighbourhood $ f_\gamma $ such that, for any $ \gamma^{\prime\prime} \in D_n $ and
+		It is open because each component $ P_{ [t_i , t_{i+1}] , D_i } $ of this intersection is an open subset in $ P $. Also, note that $ U_\gamma $ contains $ \gamma $.
+		
+		By construction the analytic continuation $ f_{\gamma^\prime} $ for any $ \gamma^\prime \in U_\gamma $ agrees with $ f_\gamma $ in $ D_n $. $ \qed $ (for step 1) 
+		\\
+		\textbf{Step 2}: $ q(U_\gamma) $ is open in $ S $.
+		
+		This is equivalent to showing $ q^{-1}(q(U_\gamma)) $ is open in $ P $. Note that $ \gamma^\prime \in q^{-1}(q(U_\gamma)) $, if $ \gamma^\prime(1) \in D_n $ and analytic contination $ f_{ \gamma^\prime } $ agress with $ f_\gamma $ in $ D_n $. Then, by step 1, there is an open neighbourhood $ U_{\gamma^\prime} $ such that, for any $ \gamma^{\prime\prime} \in U_\gamma $ we have $ \gamma^{\prime\prime}(1) \in D_n $ and
 		\[ \left. f_{\gamma^{\prime\prime}} \right|_{D_n} = \left. f_{\gamma^\prime} \right|_{D_n} = \left. f_\gamma \right|_{D_n} \]
-		so $ U_\gamma \subset q^{-1}(q(U_\gamma)) $. Hence, $ q^{-1}(q(U_\gamma)) $ is open. By the definition of open subsets in $ S $, $ q(U_\gamma) $ is open. This is the required subset in $ \pi_{-1}(U)$.
+		So $ U_\gamma \subset q^{-1}(q(U_\gamma)) $. Hence, $ q^{-1}(q(U_\gamma)) $ is open. By definition, $ q(U_\gamma) $ is open. This is the required subset in $ \pi^{-1}(U)$.
 	\end{proof}
 
 %notes-p.17	
-	By a similar argument, $ \pi^{-1} \backslash q(U_\gamma) $ is also open. This means $ q(U_\gamma) $ is both open and closed, so it is a union of connected components of $ \pi^{-1}(U) $.
-
+	By a similar argument, $ \pi^{-1}(U) \setminus q(U_\gamma) $ is also open. This means $ q(U_\gamma) $ is both open and closed, so it is a connected components of $ \pi^{-1}(U) $.
+	
+	Now we try to show that the restriction of $ \pi $ to $ q(U_\gamma) $ is a homeomorphism which can be used to define a chart. 
 	\begin{defn}
-		A map $ f: S \to \mathbb{C} $ is \emph{open} if for any open subset $ V \subset S $, $ f(V) $ is open in $ \mathbb{C} $.
+		A map $ f: S \to \mathbb{C} $ is \emph{open} if for any open subset $ U \subset S $, $ f(U) $ is open in $ \mathbb{C} $.
 	\end{defn}
-	Notice that $ f $ is an open map implies that $f^{-1}$ is continuous. Since for any open subset $ V \subset S $, $ {(f^{-1})}^{-1}(V) = f(V) $ is open in $ \mathbb{C} $.
+	Notice that $ f $ is an open map implies $f^{-1}$ is continuous (for any open subset $ U \subset S $, $ {(f^{-1})}^{-1}(U) = f(U) $ is open in $ \mathbb{C} $).
 	
 	\begin{claim}
 		The map $ \pi: S \to \mathbb{C} $ is an open map.
 	\end{claim}
 
 	\begin{proof}
-		Consider a basic open subset $ V $ where
-		\[ q^{-1} = P_{k , U} \subset P \]
-		where \[ P_{k , U} = \lbrace \gamma \in P \mid \gamma(K) \subset U \rbrace \]
-		Hence, \[ V = \lbrace \lbrack\gamma\rbrack \in S \mid \gamma(K) \subset U \rbrace \]
-		and
+		Consider an open subset $ V \subset S $ with
+		\[ q^{-1}(V) := P_{K, U} \subset P \]
+		where 
+		\[ P_{K , U} = \lbrace \gamma \in P \mid \gamma(K) \subset U \rbrace \]
+		Hence, 
+		\[ V = \lbrace \lbrack\gamma\rbrack \in S \mid \gamma(K) \subset U \rbrace \]
+		and 
 		\begin{align*}
 		\pi(V) &= \lbrace \gamma(1) \mid \gamma(K) \subset U , \gamma \in P\rbrace \\
 		&=  \begin{cases}
@@ -387,8 +530,9 @@
 				D_f			&\text{if } 1 \notin K\\
 			\end{cases}
 		\end{align*}
-		where $ D_f $ is the union of all open disks with some defined analytic continuation of $ f $. In either case $ \pi(V) $ is open.
+		where $ D_f $ is the union of all open disks with some defined analytic continuation of $ f $. In either case $ \pi(V) $ is open, so $ \pi $ is an open map.
 	\end{proof}
+
 	\begin{remark}
 		It follows that $ \pi^{-1} $ is continuous.
 	\end{remark}
@@ -397,84 +541,163 @@
 		The restriction of $ \pi $ to $ q(U_\gamma) $:
 		\[\begin{matrix}
 			\xymatrix{
-			q(U_\gamma)\ar[d]^\pi & \hspace{-1cm}\subset S \\
-			U &\hspace{-1.5cm}\subset \mathbb{C} }
+			q(U_\gamma)\ar[d]^\pi & \hspace{-1cm}\subset S \\ 
+			U &\hspace{-1.7cm}\subset \mathbb{C} }
 		\end{matrix}\]
 		is a bijection on to U.
 	\end{claim}
 	
 	\begin{proof}\
 		\textbf{Injective:} Suppose $ \pi \lbrack \gamma_1 \rbrack = \pi \lbrack \gamma_2 \rbrack $, for $ \lbrack \gamma_1 \rbrack = \lbrack \gamma_2 \rbrack \in q(U_\gamma) $. Then
-		\[ \gamma_1(1) = \gamma_2(1) = z_1 \]
-		and analytic continuation along $ \gamma_1 $ and $ \gamma_2 $ agree near $ z_1 $ (as both of the are in $ U_\gamma $). Hence,
+		\[ \gamma_1(1) = \gamma_2(1) \]
+		and analytic continuation along $ \gamma_1 $ and $ \gamma_2 $ agree near $ \gamma_1(1) $ (as both of them are in $ U_\gamma $). Hence,
 		\[ \lbrack \gamma_1 \rbrack = \lbrack \gamma_2 \rbrack \]
-		and $ \left.\pi \right|_{q(U_\gamma)} $ is injective. $ \qed $
+		and $ \left.\pi \right|_{q(U_\gamma)} $ is injective.
 		\\
-		\textbf{Surjective:} The choice of $ U $ shows that $ \left.\pi \right|_{q(U_\gamma)} $ is subjective. We can extend $ \gamma $ by a radial path in $ U $ to obtain a new path, with endpoint at any given point of $ U $, along which we can analytically continue, and such that the analytic continuation agrees with that along $ \gamma $. $ \qed $
-		\\
+		\textbf{Surjective:} The choice of $ U $ shows that $ \left.\pi \right|_{q(U_\gamma)} $ is surjective. We can extend $ \gamma $ by a radial path in $ U $ to obtain a new path, with endpoint at any given point of $ U $, along which we can analytically continue, and such that the analytic continuation agrees with that along $ \gamma $. 
+
+% Figure 2.5:  Radical paths in U
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    %neighbourhood U
+        \draw[dashed,fill=gray!20] (4,1) circle [radius=1] node[right] at(5,1.5) {$ U $};
+    % paths
+        \draw[postaction={on each segment={mid arrow}}] (0,0) .. controls (1,0.25) and (1,1.5) .. (4,1);
+        \draw[->,dashed] (4,1) to (4.7,0.7);
+        \draw[->,dashed] (4,1) to (4.4,1.7);
+        \draw[->,dashed] (4,1) to (4.4,0.3);
+        \draw[->,dashed] (4,1) to (3.7,0.4);
+        \draw[->,dashed] (4,1) to (3.7,1.7);
+    % labelling start-, end-points and paths
+        \node[inner sep=1.5pt, fill, circle, label = {90:}] at (4,1) (point) {}
+        node [above] at (1,1) {$ \gamma $};
+    \end{tikzpicture}
+    \caption{Radical paths in $ U $}
+\end{figure}
+
 		Hence, $ \left.\pi \right|_{q(U_\gamma)} $ is bijective.
 	\end{proof}
 	\begin{remark}
 		This shows that $ \left.\pi \right|_{q(U_\gamma)} $ is a homeomorphism (as $ \pi $ is bijective and continuous and $ \pi^{-1} $ is continuous).
 	\end{remark}
-	
-	\begin{coro}
+
+	\begin{coro}\label{S is a Riemann surface}
 		$ S $ is a Riemann surface.
 	\end{coro}
-	
+
+\subsection{Proof of Corollary \ref{S is a Riemann surface}}
 	\begin{proof}
 		Check the properties defined in definition of Riemann surface.
 		\begin{enumerate}
-			\item[(i)] $ S $ is a topological space, locally homeomorphic to $ \mathbb{C} $, so $ S $ is a Hausdorff topological space; 
+			\item[(i)] $ S $ is a topological space, locally homeomorphic to $ \mathbb{C} $, so $ S $ is a Hausdorff topological space.
 			\item[(ii)] We use $ \pi $ to give charts: cover $ S $ by open subsets $ q(U_\gamma) $ for $ \lbrack \gamma \rbrack \in S $ and on each $ q(U_\gamma) $
 			\[ \left.\pi \right|_{q(U_\gamma)}: q(U_\gamma) \longrightarrow U \]
-			is a homeomorphism;
-			\item[(iii)] The transition functions are the identity, hence are analytic.
+			is a homeomorphism.
+			\item[(iii)] The transition functions are the identity, hence are analytic. $ \qedhere$
 		\end{enumerate}
 	\end{proof}
 
 %notes-p.19	
+	\begin{defn}
+		Let $ S_1 $ and $ S_2 $ be two Riemann surfaces. A map $ f: S_1 \to S_2 $ is \emph{holomorphic} if for every chart of $ S_1 $ and every chart of $ S_2 $, 
+		\[ \varphi_2 \circ f \circ \varphi_1^{-1} : \varphi_1(U_1) \longrightarrow \varphi_2(U_2)\]
+		is holomorphic.
+	\end{defn}
+
 	\begin{prop}
 		$ \tilde{f}: S \to \mathbb{C} $ is an holomorphic function.
 	\end{prop}
 	
 	\begin{proof}
-		We need to show that $ \tilde{f} $ is holomorphic in each chat. Note
+		We need to show that $ \tilde{f} $ is holomorphic in each chart. Note
 		\[\begin{matrix}
 		\xymatrix{
 			q(U_\gamma) \ar@{<->}[d]_{\pi} \ar[r]^{ \tilde{f} } &\mathbb{C} &\\
-			U \ar[ur]_{\tilde{f} \circ \pi}
+			U \ar[ur]_{\tilde{f} \circ \pi^{-1}}
 		}
 		\end{matrix}\]
-		where $ \tilde{f} \circ \pi $ is the analytic continuation of $ f $ along $ \gamma $ (defined in $ U $).
+		where $ \tilde{f} \circ \pi^{-1} $ is the analytic continuation of $ f $ along $ \gamma $ (defined in $ U $). So $ \tilde{f} = \left( \tilde{f} \circ \pi^{-1} \right) \circ \pi $ is holomorphic.
 	\end{proof}
 	
 	\begin{remark}
 		$ \tilde{f}: S \to \mathbb{C} $ encodes all possible analytic continuations of $ f $. The analytic continuation along $ \gamma $ is given by the restriction of $ \tilde{f} $ to $ q(U_\gamma) $.
 	\end{remark}
 	
-	\section{Finding Riemann surface}
+	\begin{ex} 
+		Consider logarithm function $ f(z) = \ln z $.
+		\[ \ln (1+w) = w - \frac{w^2}{2} + \frac{w^3}{3!} - \cdots \] 
+		and $ \ln (1) = 0 $. By definition, 
+		\[ \ln (w) = \int_{\gamma}\frac{1}{w} \,\mathrm{d}w = 2\pi i \cdot W(\gamma;0) \]
+		where $ W(\gamma;0) $ represents winding number of $ \gamma $ about 0.
+		
+		Set $ z_0 = 1$. Consider $ S $ as previously constructed. Then
+		\[ \pi^{-1} = \lbrace [\gamma] \mid \gamma(1) = \gamma(0) = 1, \gamma \text{ does not pass through 0 } \rbrace \]
+		and there is a bijection from $ \pi^{-1} \to \mathbb{Z} $.
+		Similarly, 
+		\begin{align*}
+			\pi^{-1}(w) &=  \begin{cases}				\mathbb{Z}  	&\text{if } w \neq 0\\
+			\varnothing		&\text{if } w  = 0\\
+			\end{cases}
+		\end{align*}
+		There is a model for the logarithm function:
+		\[\begin{matrix}
+		\xymatrix{
+			S \ar[d]_{\pi} \ar[r]^{\tilde{\ln}} & \mathbb{C} &\\
+			\mathbb{C} \setminus \lbrace 0 \rbrace
+		}
+		\xymatrix{
+			~ \ar@{~>}[r] & ~  
+		}
+		\xymatrix{
+			\mathbb{C} \ar[d]_{\exp} \ar[r]^{id} & \mathbb{C} &\\
+			\mathbb{C} \setminus \lbrace 0 \rbrace
+		}
+		\end{matrix}\]
+		because $ e^{z + 2\pi i} = e^z $.
+	
+	\end{ex}
+	
+	\section{Practical way of finding Riemann surface}
+	In section 2 we have seen definition of Riemann surfaces and proven that the quotient set $ S $ has Riemann surface structure. For a given analytic function $ f: D \to \mathbb{C} $, Riemann surface of analytic continuous of $ f $ is given by the following model:
+	\[\begin{matrix}
+	\xymatrix{
+		S_f \ar[d]_{\pi} \ar[r]^{ \tilde{f} } &\mathbb{C} &\\
+		\mathbb{C}
+	}
+	\end{matrix}\]
+	Back to Example \ref{logarithm}, where we found
+	\[\begin{matrix} 
+	\xymatrix{
+		\mathbb{C} \ar@/_/@[blue][ddr]_{\exp} \ar@[blue][dr]^{\sim} \ar@/^/@[blue]@{=}[drr]^{id} \\			
+		&S_{\ln} \ar[d]^{\pi} \ar[r]_{ \tilde{\ln} } & \mathbb{C} \\
+		& \mathbb{C} \setminus \lbrace 0 \rbrace
+	}
+	\end{matrix}\]
+	We want to find a general way of conducting Riemann surface of analytic continuations of $ f $ similar to what we have done in this example. So construct model of Riemann surface $ X $ with holomorphic maps similar to red maps in above diagram.
+	
 	\begin{defn}
 		Given $ x \in X $, there is an open neighbourhood $ U \ni x $ such that
-		\[ \left. f \right|_U : \longrightarrow f(U)  \]
+		\[ \left. f \right|_U : U \longrightarrow f(U)  \]
 		is a homeomorphism, then f is called a \emph{local homeomorphism}.
-	\end{defn}Suppose there are a connected Riemann surface $ X $ and holomorphic maps
+	\end{defn}
+% p.24
+	Suppose there are connected Riemann surface $ X $ and holomorphic maps
 	\[\begin{matrix}
 	\xymatrix{
 		X \ar[d]_{f} \ar[r]^{g} &\mathbb{C} &\\
-		C
+		\mathbb{C}
 	}
 	\end{matrix}\]
-	which are local homeomorphisms.
-	Let $ h = \left. g \right|_U \circ (\left. f \right|_U)^{-1} $, h is holomorphic.
+	which are local homeomorphisms. Given a point $ x \in X $ and assume $ U $ is a neighbourhood of $ x $. Let $ h = \left. g \right|_U \circ {(\left. f \right|_U)}^{-1} $. h is holomorphic.
 	\[\begin{matrix}
 	\xymatrix{
 		U \ar[d]_{\left. f \right|_U} \ar[r]^{\left. g \right|_U} &g(U) &\\
-		f(U) \ar[ur]_{h}
+		f(U) \ar[ur]_{\,h = \left. g \right|_U \circ {(\left. f \right|_U)}^{-1} }
 	}
 	\end{matrix}\]
 	\begin{claim}
-		There is a commutative diagram of holomorphic maps.
+		There is a commutative diagram of holomorphic maps:
 		\[\begin{matrix}
 		\xymatrix{
 			X \ar@/_/[ddr]_f \ar[dr]^k \ar@/^/[drr]^g \\			
@@ -486,10 +709,20 @@
 
 %notes-p.25
 	\begin{proof}
-		Choose $ x^\prime \in X $. Choose a path $ \gamma: \lbrack 0,1 \rbrack \to X $ from $ x $ to $ x^\prime $, that is $ \gamma(0) = x $ and $ \gamma(a) = x^\prime $. Such an $ x^\prime $ exists since $ X $ is connected.
-		Then we obtain a path $ f \circ \gamma: \lbrack 0,1 \rbrack \to \mathbb{C} $ mapping $ f(x) $ to $ f(x^\prime) $. We can analytically continue $ h $ along the path $ f \circ \gamma $ because $ f $ is a local homeomorphism onto its image. At any point $ f \circ \gamma(t) $ the analytic continuation of $ h $ is defined as $ g \circ \gamma(t) $.
+		Fix $ x^\prime \in X $. Choose a path $ \gamma: \lbrack 0,1 \rbrack \to X $ from $ x $ to $ x^\prime $, such that $ \gamma(0) = x $ and $ \gamma(1) = x^\prime $. Path $ \gamma $ exists since $ X $ is connected.
+		Then we obtain a path $ f \circ \gamma: \lbrack 0,1 \rbrack \to \mathbb{C} $ starting from $ f(x) $ and ending at $ f(x^\prime) $. We can analytically continue $ h $ along the path $ f \circ \gamma $ because $ f $ is a local homeomorphism onto its image. 
+		\[\begin{matrix}
+		\xymatrix{
+			x_t \ar@{}[r]{\,\in}\hspace{-2cm} & U_t \ar[d]_f^\sim \ar[r]^g &\mathbb{C} &\\
+			~ &f(U_t) 			
+		}
+		\end{matrix}\]	
+		where $ x_t $ is a point on $ \gamma $, i.e. $ \gamma(t) = x_t $ for some $ 0 \leq t \leq 1$, and
+		$ U_t $ is a subset of $ X $ containing $ x_t $.
 		
-		Define $ k(x^\prime) = \lbrack f \circ \gamma \rbrack \in S_h $. Since $ \tilde{h} (\lbrack f \circ \gamma \rbrack) $ is the value of analytic continuation of $ h $ along $ f \circ \gamma $ at $ f \circ \gamma(1) $ we have
+		At any point $ (f \circ \gamma)(t) $ the analytic continuation of $ h $ is defined by choosing the local inverse of $ f $ which maps $ (f \circ \gamma)(t) $ to $ \gamma(t) $, and then applying $ g $. So the value of analytic continuation is $ (g \circ \gamma)(t) $.
+		
+		Define $ k(x^\prime) = \lbrack f \circ \gamma \rbrack \in S_h $. Since $ \tilde{h} (\lbrack f \circ \gamma \rbrack) $ is the value of analytic continuation of $ h $ along $ f \circ \gamma $ at $ (f \circ \gamma)(1) $, we have
 		\begin{align*}
 			\pi(\lbrack f \circ \gamma \rbrack) = f \circ \gamma(1) =f(x^\prime) \\
 			\tilde{h} (\lbrack f \circ \gamma \rbrack) = g \circ \gamma(1) =g(x^\prime)
@@ -500,49 +733,51 @@
 		\tilde{h} \circ k(x^\prime) =g(x^\prime)
 		\end{align*}
 		We need to check that $ k(x^\prime) $ does not dependent on the choice of path $ \gamma $ from $ x $ to $ x^\prime $. However, for any choice of $ \gamma $ we have the same endpoint of $ f \circ \gamma $ namely, $ f(x^\prime) $. Also, the analytic continuation agree in a neighbourhood of this endpoint and agree with
-		\[ h = \left. g \right|_U \circ (\left. f \right|_U)^{-1} \]
-		where $ U^\prime \ni x^\prime $ is an open neighbourhood such that $ \left. f \right|_U $ and $\left. g \right|_U $ are homeomorphisms onto their images. Hence the class $ \lbrack f\ circ \gamma \rbrack $ is well-defined.
+		\[ h = \left. g \right|_{U^\prime} \circ {(\left. f \right|_{U^\prime})}^{-1} \]
+		where $ U^\prime \ni x^\prime $ is an open neighbourhood such that $ \left. f \right|_{U^\prime} $ and $\left. g \right|_{U^\prime} $ are homeomorphisms onto their images. Hence the class $ \lbrack f \circ \gamma \rbrack $ is well-defined.
 	\end{proof}
 
-%notes-p.26
-	Since $ \pi $ and $ f $ are local homeomorphisms, so is $ k $ Locally, $ k = \pi_{-1} \circ f $ is holomorphic. Also, $ k(x^\prime) = k(x^{\prime\prime}) \implies f(x^\prime) = f(x^{\prime\prime}) $ and $ g(x^\prime) = g(x^{\prime\prime}) $. Hence, if either $ f $ or $ g $ is injective, then so is $ k $.
-	\begin{ex}\
+% notes-p.26
+	Since $ \pi $ and $ f $ are local homeomorphisms, so is $ k $. Locally, $ k = \pi^{-1} \circ f $ is a holomorphic function. Also, $ k(x^\prime) = k(x^{\prime\prime}) \implies f(x^\prime) = f(x^{\prime\prime}) $ and $ g(x^\prime) = g(x^{\prime\prime}) $. Hence, if either $ f $ or $ g $ is injective, then so is $ k $.
+	\begin{ex}
+		Give model of Riemann surface for a holomorphic function.
 		\begin{enumerate}
-			\item [(i)] for $ h = \sqrt{z} $, we have the following holomorphic maps:
+			\item [(i)] For $ h(z) = \sqrt{z} $, choose $ g(z) = z $, then $ h = g \circ f^{-1} $ implies $ f(z) = z^2 $. We have the following holomorphic maps:
 			\[\begin{matrix}
 			\xymatrix{
-				{ \mathbb{C} - \lbrace 0 \rbrace } \ar@/_/[ddr]_{ f(z) = z^2 } \ar[dr]^k \ar@/^/[drr]^{ g(z) = z } \\			
-				&S_{\sqrt{}} \ar[d]^{\pi} \ar[r]_{ \tilde{\sqrt{}} } &{ \mathbb{C} - \lbrace 0 \rbrace } \\
-				&{ \mathbb{C} - \lbrace 0 \rbrace }
+				{ \mathbb{C} \setminus \lbrace 0 \rbrace } \ar@/_/@[blue][ddr]_{ f(z) = z^2 } \ar@[blue][dr]^k \ar@{^{(}->}@/^/@[blue][drr]^{ g(z) = z } \\			
+				&S_{\sqrt{~}} \ar[d]^{\pi} \ar[r]_{ \tilde{\sqrt{~}} } &{ \mathbb{C} - \lbrace 0 \rbrace } \\
+				&{ \mathbb{C} \setminus \lbrace 0 \rbrace } 
 			}
 			\end{matrix}\]	
-			Here $ k $ is a biholomorphic because any path in $ \mathbb{C} - \lbrace 0 \rbrace $ is the image of a path in $ \mathbb{C} - \lbrace 0 \rbrace $ via $ f(z) = z $, that is, $ k $ is surjective.
-			\item [(ii)] for $ h = \ln $, we have the following holomorphic maps:
+			Here $ k $ is a bi-holomorphic because any path in $ \mathbb{C} \setminus \lbrace 0 \rbrace $ is the image of a path in $ \mathbb{C} \setminus \lbrace 0 \rbrace $ via $ f(z) = z^2 $, that is, $ k $ is surjective.
+			\item [(ii)] For $ h(z) = \ln(z) $, again choose $ g $ as the identity map, then $ h = g \circ f^{-1} $ implies $ f(z) = e^z $. We have the following holomorphic maps:
 			\[\begin{matrix}
 			\xymatrix{
-				\mathbb{C} \ar@/_/[ddr]_{ f(z) = \exp } \ar[dr]^k \ar@/^/[drr]^{ g(z) = id } \\			
+				\mathbb{C} \ar@/_/@[blue][ddr]_{ f = \exp } \ar@[blue][dr]^k \ar@{=}@/^/@[blue][drr]^{ g = id } \\			
 				&S_{\ln} \ar[d]^{\pi} \ar[r]_{ \tilde{\ln} } &\mathbb{C}  \\
-				&{ \mathbb{C} - \lbrace 0 \rbrace }
+				&{ \mathbb{C} \setminus \lbrace 0 \rbrace }
 			}
 			\end{matrix}\]
-			Here $ k $ is a biholomorphic because any path in $ \mathbb{C} - \lbrace 0 \rbrace $ is the image of exponential function.
-			\item [(i)] for a polynomial $ p: \mathbb{C} \to \mathbb{C} $ the commutative map is:
+			Here $ k $ is a biholomorphic because any path in $ \mathbb{C} \setminus \lbrace 0 \rbrace $ is the image of exponential function.
+			\item [(iii)] Fix a polynomial $ P: \mathbb{C} \to \mathbb{C} $. Suppose $ r: D \to \mathbb{C} $ gives a local root of $ P $ in some neighbourhood of $ D $. The commutative map is:
 			\[\begin{matrix}
 			\xymatrix{
-				{ \mathbb{C} - \lbrace z \mid p^\prime(z) = 0 \rbrace } \ar@/_/[ddr]_p \ar[dr]^k \ar@/^/[drr]^g \\			
+				{ \mathbb{C} \setminus \lbrace z \mid P^\prime(z) = 0 \rbrace } \ar@/_/@[blue][ddr]_P \ar@[blue][dr]^k \ar@/^/@[blue][drr]^g \\			
 				&S_r \ar[d]^{\pi} \ar[r]_{ \tilde{r} } &\mathbb{C} \\
 				&\mathbb{C}
 			}
 			\end{matrix}\]	
-			where $ r: D \to \mathbb{C} $ gives a local root of $ p $ in some neighbourhood of $ D $.
 		\end{enumerate}
 	\end{ex}
 
-	\section{}
-	How much does a Riemann surface $ S_f $ depend on choice of point $ z_0 \in \mathbb{C} $ near which $ f $ initially defined?
+	\section{Homotopic and Concatenation}
+	In this section we consider the question about dependency of Riemann surfaces on the choice of point $ z_0 \in \mathbb{C} $ near which $ f $ initially defined.
 	
 	\begin{defn}
-		Two paths $ \gamma, \gamma^\prime : \lbrack 0,1 \rbrack \to U \subset \mathbb{C} $ with $ \gamma(0) = z_0 = \gamma^\prime (0) $ and $ \gamma(1) = z_1 = \gamma^\prime (1) $ are \emph{homotopic} if there is a continuous map
+		Let $ \gamma, \gamma^\prime : \lbrack 0,1 \rbrack \to U \subset \mathbb{C} $ be two paths with 
+		\[ \gamma(0) = z_0 = \gamma^\prime (0) \text{ and }  \gamma(1) = z_1 = \gamma^\prime (1) \]
+		$ \gamma $ and $ \gamma^\prime $ are \emph{homotopic} if there is a continuous map
 		\[ h: \lbrack 0,1 \rbrack \times \lbrack 0,1 \rbrack \longrightarrow U \]
 		such that 
 		\begin{enumerate}
@@ -550,30 +785,17 @@
 			\item [(ii)] $ h(s,0) = z_0$ and $h(s,1) = z_1, \forall s \in \lbrack 0,1 \rbrack $
 		\end{enumerate}  
 	We write $ \gamma \simeq \gamma^\prime $ when $ \gamma $ and $ \gamma^\prime $ are homotopic to each other.
-    
-    % picture 5
-    \begin{figure}[H]
-        \centering
-        \begin{tikzpicture}
-        % neighbourhood with irregular shape
-            \draw[dashed, fill=gray!20]  plot[smooth, tension=0.7] coordinates { (0.5,3) (1,4.5) (2,5) (4,5) (6,4) (8,4) (8.5,2) (8,1) (6,0) (4,0.8) (1,1.5) (0.5,3) };
-        % paths gamma, gamma' and gamma_s
-            \draw (2,4) .. controls (5,3.25) and (5,4.5).. (7,2) node[left] at (4,4) { $ \gamma $};
-            \draw (2,4) .. controls (3,1) .. (5,1.5) .. controls (5,1.5) ..  (7,2) node [above] at (6,1) {$ \gamma^\prime $};
-            \draw[dashed] (2,4) .. controls (3,3) and (4,4) .. (7,2) node[below] at (5,3) {$ \gamma_s $};
-            \node[below] at (6,5) {$ U $};
-        % points
-            \node[inner sep=1.5pt, fill, circle, label = {180:$ z_0 $}] at (2,4) (point) {} 
-            node[inner sep=1.5pt, fill, circle, label={45:$ z_1 $}] at (7,2) (point) {};
-        \end{tikzpicture}
-        \caption{paths in $ U $}
-    \end{figure}
-
 	\end{defn}
+	
+% Figure 4.1: Homotopic paths
+%notes-p.30
 	\begin{lem}
-		Suppose $ \gamma, \gamma^\prime : \lbrack 0,1 \rbrack \to \mathbb{C} $ with $ \gamma(0) = z_0 = \gamma^\prime (0) $ and $ \gamma(1) = z_1 = \gamma^\prime (1) $ are homotopic in some open subset $ U \subset \mathbb{C} $ in which an analytic continuation of $ f $ is defined. Then
+		Suppose $ \gamma, \gamma^\prime : \lbrack 0,1 \rbrack \to \mathbb{C} $ are two paths with 
+		\[ \gamma(0) = z_0 = \gamma^\prime (0) \text{ and }  \gamma(1) = z_1 = \gamma^\prime (1) \]
+		$ \gamma $ and $ \gamma^\prime $ are homotopic in some open subset $ U \subset \mathbb{C} $ in which an analytic continuation of $ f $ is defined. Then
 		\[ \lbrack \gamma \rbrack = \lbrack \gamma^\prime \rbrack \in S_f \]
 	\end{lem}
+
 	\begin{proof}
 		Let $  h: \lbrack 0,1 \rbrack \times \lbrack 0,1 \rbrack \to U $ be the homotopy and let 
 		\begin{align*}
@@ -585,66 +807,47 @@
 			\lbrack 0,1 \rbrack &\longrightarrow \pi^{-1}(z_1) \subset S_f \\
 			s &\longmapsto \lbrack \gamma_s \rbrack
 		\end{align*}
-		This map is locally constant. For $ s^\prime $ close to $ s $ we have $ \gamma_{s^\prime} $ close to $ \gamma_s $ and can use the same analytic continuation to define $ \lbrack \gamma_{s^\prime} \rbrack $ as $ \lbrack \gamma_s \rbrack $. 
-
-        % picture 6
-        \begin{figure}[H]
-            \centering
-            \begin{tikzpicture}
-            % neighbourhoods
-                \path[dashed, ultra thin, fill=gray!20] (0,2) circle [radius=1]
-                (1.3,1.8) circle [radius=0.6] 
-                (2.3,1.7) circle [radius=0.7] 
-                (3.3,1.5) circle [radius=0.75]
-                (4.3,0.7) circle [radius=0.7] 
-                (5,0) circle [radius=0.6];
-            % paths
-                \draw (0,2) .. controls (3,1.25) and (3,2.5).. (5,0) node[left] at (3.6,1.8) { $ \gamma $};
-                \draw[dashed] (0,2) .. controls (1,1.7) and (2,2.7) .. (5,0) node[below] at (3.3,1.2) {$ \gamma_s $};
-            \end{tikzpicture}
-            \caption{ $ \gamma_{s^\prime} $ and $ \gamma_s $ can use the same analytic continuation }
-        \end{figure}
-    
+		
+% Figure 5.2:  		
 		This map is locally constant. For $ s^\prime $ close to $ s $ we have $ \gamma_{s^\prime} $ close to $ \gamma_s $ and can use the same analytic continuation to define $ \lbrack \gamma_{s^\prime} \rbrack $ as $ \lbrack \gamma_s \rbrack $. Hence,
 		\[ \lbrack \gamma_{s^\prime} \rbrack = \lbrack \gamma_s \rbrack \]
 		However, $ \lbrack 0,1\rbrack $ is connected. So a locally constant function is constant.
 	\end{proof}
-	
+
 % notes - p.31
 	Suppose we have a path $ \gamma: [0,1] \to \mathbb{C} $ from $ z_0 $ to $ z_1 $ along which we can analytically continue $ f $. Then let $ f_1 $ be the analytic continuation in a neighbourhood of $ z_1 $ and $ S_{f_1} $ the corresponding Riemann surface.
 	
-	% picture 7
-		\begin{defn}[Concatenation]
-			Let $ \gamma_1 $, $ \gamma $ be two paths on $ \mathbb{C} $. The \emph{concatenation} of $ \gamma_1 $ and $ \gamma $ is defined as
-			\begin{align*}
-			\gamma_1 \circ \gamma : [0,1] &\longrightarrow \mathbb{C} \\
+% picture 7
+	\begin{defn}[Concatenation]
+		Let $ \gamma, \delta : [0,1] \to \mathbb{C} $ be two paths. The \emph{concatenation} of the paths $ \gamma $ and $ \delta $ is defined as
+		\begin{align*}
+			\delta \circ \gamma : [0,1] &\longrightarrow \mathbb{C} \\
 			t &\longmapsto  \begin{cases}
 					\gamma(2t) & 0 \leq t \leq \frac{1}{2}\\
-					\gamma_1(2t-1) & \frac{1}{2} \leq t \leq 1
+					\delta(2t-1) & \frac{1}{2} \leq t \leq 1
 				\end{cases}
-			\end{align*}
-		\end{defn}
-	
-		
-		The map is well-defined. It only depends on $ [\gamma_1] $ and not $ \gamma_1 $ itself.
-		There is a map 
-		\begin{align*}
-			 C_\gamma : S_{f_1} &\longrightarrow S_f \\
-			 [ \gamma_1 ] &\longmapsto [\gamma_1 \circ \gamma ]
 		\end{align*}
-		where $ \gamma_1 \circ \gamma $ is the \emph{concatenation} of the paths $ \gamma $ and $ \gamma_1 $.
+	\end{defn}
+
+	There is a map 
+	\begin{align*}
+		 C_\gamma : S_{f_1} &\longrightarrow S_f \\
+		[ \gamma_1 ] &\longmapsto [\gamma_1 \circ \gamma ]
+	\end{align*}
+	where $ \gamma_1 \circ \gamma $ is the concatenation of the paths $ \gamma $ and $ \gamma_1 $. The map is well-defined. It only depends on $ [\delta] $ and not $ \delta $ itself.
+		
 		
 	There is an inverse
 	\begin{align*}
-		C_\gamma^{-1}： S_f &\longrightarrow S_f^{-1} \\
+		C_{\gamma^{-1}}: S_f &\longrightarrow S_{f^{-1}} \\
 		[\gamma_0] &\longmapsto [\gamma_0 \circ \gamma^{-1} ]
 	\end{align*} 
 	where $ \gamma^{-1}(t) = \gamma(1-t) $.
 	To see it is inverse note that 
 	\[ (\gamma_1 \circ \gamma) \circ \gamma^{-1} \simeq \gamma_1 \]
-	where $ \simeq $ means 'is homotopic to'. Hence, $ [(\gamma_1 \circ \gamma) \circ \gamma^{-1}] = [\gamma_1] $. Similarly, $ [(\gamma_0 \circ \gamma) \circ \gamma^{-1}] = [\gamma_0] $.
+	Hence, $ [(\gamma_1 \circ \gamma) \circ \gamma^{-1}] = [\gamma_1] $. Similarly, $ [(\gamma_0 \circ \gamma^{-1}) \circ \gamma] = [\gamma_0] $.
 	
-	Note that these maps are compatible with the projections to $ \mathbb{C} $, since $ \gamma_1 $ and $ \gamma_1 \circ \gamma $ have the same endpoint, so as $ \gamma_0 $ and $ \gamma_0 \circ \gamma $. That is, the following maps commute:
+	Note that these maps are compatible with the projections to $ \mathbb{C} $, since $ \gamma_1 $ and $ \gamma_1 \circ \gamma $ have the same endpoint, so as $ \gamma_0 $ and $ \gamma_0 \circ \gamma^{-1} $. That is, the following maps commute:
 	
 	\[\begin{matrix}
 		\xymatrix{
@@ -656,25 +859,27 @@
 				\mathbb{C} \ar[ur]_{\pi_1}
 		}
 	\end{matrix}\]
-	\begin{defn}
-		Let $ X $ and $ Y $ be two Riemann surfaces with charts $ (U_1,\varphi_1) $and $ (U_2,\varphi_2) $. A map $ f: X \to Y $ is \emph{holomorphic}, if the composite map $ {\varphi_2}^{-1} \circ f \circ \varphi_1 $ is holomorphic. 
-	\end{defn}
+	Recall that given two Riemann surface $ X $ and $ Y $ with charts $ \varphi_1 $ and $ \varphi_2 $. A map $ f: X \to Y $ is holomorphic if the composite map $ {\varphi_2}^{-1} \circ f \circ \varphi_1 $ is holomorphic for every $ \varphi_1 $ and $ \varphi_2 $.
+	
+	
 	\[\begin{matrix}
 		\xymatrix{
 			\varphi_1(U_1) \ar[r]^{f} & \varphi_2(U_2) \ar[d]^{\varphi_2^{-1}} &\\
 			U_1 \ar[u]^{\varphi_1} \ar[r]_{\varphi_2^{-1} \circ f \circ \varphi_1} & U_2
 		}
 	\end{matrix}\]
-	In our case, we have,
+	In this case we will have
 	\[\begin{matrix}
 		\xymatrix{
-			\pi_1^{-1}(U_1) \ar[r]^{C_\gamma} & \pi^{-1}(U) \ar[d]^{\pi} &\\
-			\mathbb{C} \ar[u]^{\pi_1^{-1}} \ar[r]_{\pi \circ C_\gamma \circ \pi_1^{-1}} & U
+			\pi_1^{-1}(U_1) \ar[r]^{C_\gamma} & \pi^{-1}(U) \ar[d]^{ { (\pi^{-1}) }^{-1} = \pi} &\\
+			U_1 \ar[u]^{\pi_1^{-1}} \ar[r]_{\pi \circ C_\gamma \circ \pi_1^{-1}} & U
 		}
 	\end{matrix}\]
-	and $ \pi \circ C_\gamma \circ \pi_1^{-1} (z) =  z $ is the identity (which is holomorphic). This implies $ C_\gamma $ and $ C_{\gamma^{-1}} $ are biholomorphic.
-	This shows that $ S_f $ is independent of the point $ z_0 $; it only depends on $ f $.
-	\section{title}
+	and $ (\pi \circ C_\gamma \circ \pi_1^{-1}) (z) =  z $ is the identity (which is holomorphic). This implies $ C_\gamma $ and $ C_{\gamma^{-1}} $ are holomorphic. So $ S_f $ and $ S_{f_1} $ are bi-holomorphic.
+	Then $ S_f $ is independent of the point $ z_0 $; it only depends on $ f $.
+
+% section 5, notes-p.33
+	\section{Compactifying Riemann surfaces}
 	Suppose we have constructed the following maps
 	\[\begin{matrix}
 		\xymatrix{
@@ -693,7 +898,7 @@
 			\begin{matrix}
 				\xymatrix{
 					& S_f \ar[d]^{\pi_f}  &\\
-					D \setminus \lbrace 0 \rbrace \ar@{.>}[ur]^{g} \ar[r]_{~~~~z \mapsto z^n }  &\mathbb{C}
+					D \setminus \lbrace 0 \rbrace \ar@/^/@{.>}[ur]^{g} \ar[r]_{~~~~z \mapsto z^n }  &\mathbb{C}
 				}
 			\end{matrix}
 		\end{equation}
@@ -703,12 +908,11 @@
 		\[\begin{matrix}
 		\xymatrix{
 			& S_{\sqrt{~}} \ar[d]^{\pi_{\sqrt{~}}}  &\\
-			D \setminus \lbrace 0 \rbrace \ar@{<.>}[ur]^{g} \ar[r]_{~~~~z \mapsto z^2 }  &\mathbb{C}
+			D \setminus \lbrace 0 \rbrace \ar@/^/@{<.>}[ur]^{g} \ar[r]_{~~~~z \mapsto z^2 }  &\mathbb{C}
 		}
 		\xymatrix{
 			~ \ar@{~>}[r]_{\text{when } n=2} & ~  
 		}
-		
 		\xymatrix{
 			& \mathbb{C} \setminus \lbrace 0 \rbrace \ar[d]^{z \mapsto z^2}  &\\
 			D \setminus \lbrace 0 \rbrace \ar@{^{(}->}[ur]^{g} \ar[r]_{~~~~z \mapsto z^2 }  &\mathbb{C}
@@ -722,14 +926,14 @@
 		More precisely, given 
 		\[ \gamma, \delta :[0,1] \longrightarrow D \setminus \lbrace 0 \rbrace \] 
 		with $ \gamma(0) = 1 =\delta(0) $ and $ \gamma(1) = z =\delta(1) $. We have 
-		\[ \gamma \simeq \lambda^k \circ \delta \]
+		\[ \gamma \simeq \delta \circ \lambda^k \]
 		where $ \lambda(\theta) = e^{2\pi i \theta} $, so $ \lambda^k (\theta) = e^{2\pi ki \theta} $. It follows that after applying the map 
 		\begin{align*}
 			D \setminus \lbrace 0 \rbrace &\longrightarrow \mathbb{C}\\
 			z &\longmapsto z^n
 		\end{align*}  
-		we have $ \gamma^n \simeq {(\lambda^k \circ \delta)}^n = {(\lambda^k)}^n \circ \delta^{\,n} = \lambda^{nk} \circ \delta^{\,n} $, where $ \gamma^n(t) := {\gamma(t)}^n $. So 
-		\[ [\gamma^n] = [\lambda^{nk} \circ \delta^{\,n}] = [ \delta^{\,n} ] \in S_f \]
+		we have $ \gamma^n \simeq {( \delta \circ \lambda^k )}^n = { \delta^{\,n} \circ (\lambda^k)}^n = \delta^{\,n} \circ \lambda^{nk} $, where $ \gamma^n(t) := {\gamma(t)}^n $. So 
+		\[ [\gamma^n] = [\delta^{\,n} \circ \lambda^{nk} ] = [ \delta^{\,n} ] \in S_f \]
 		is a well-defined point of $ S_f $, depending only on $ z \in D \setminus \lbrace 0 \rbrace $, not on the path from 1 to $ z $. 
 		
 		Set $ g(z) = [\gamma^n] $ Note that by definition 
@@ -743,11 +947,11 @@
 		
 		In general, suppose $ g(w) = g(z) $. Then \[ w^n = \pi_f g(w) = \pi_f g(z) = z^n \] 
 		Hence $ z = w \cdot e^\frac{2\pi ik}{n} $ for some $ 0 \leq k < n $. Now choose the path from 1 to $ z $. So
-		\[g(w) = [\gamma^n] =[\delta^{\,n} \circ \gamma^n] = g(z) \in S_f \]
+		\[g(w) = [\gamma^n] =[ \delta^{\,n} \circ \gamma^n ] = g(z) \in S_f \]
 		Note that $ \gamma^{-1} (t) = \gamma (1-t) $, and multiply through from the left to obtain
 		\[ [ { (\gamma^{-1}) }^n \circ \gamma^n ] =[ { (\gamma^{-1}) }^n \circ \delta^{\,n} \circ \gamma^n] \]
 		the LHS of the second equation equals to $ [\,1\,] $ as $ \gamma^{-1} \circ \gamma \simeq 1 $.
-		Note that $ {\gamma^{-1}}^n \circ \delta^{\,n} \circ \gamma^n \simeq \theta \mapsto e^{2\pi i k\theta} $. So we see that
+		Note that $ {(\gamma^{-1})}^n \circ \delta^{\,n} \circ \gamma^n \simeq \theta \mapsto e^{2\pi i k\theta} $. So we see that
 		\[ [\,1\,] = [\,\theta \longmapsto e^{2\pi i k\theta}\,] \]
 		which implies $ k=0 $ (as before since $ n $ is minimal with above property). Hence $ z=w $ and $ g $ is injective.
 	\end{proof}
@@ -775,10 +979,15 @@
 		\end{matrix} \]
 		\begin{ex}
 			\[\begin{matrix}
+				\hspace{0.5cm}
 				\xymatrix{
 					S_{\sqrt{~}} \ar[d]_{\pi_{\sqrt{~}}} \ar@{=}[r] &\mathbb{C}P^1 \ar[dl]^{z \mapsto z^2}&\\
 					\mathbb{C}
-				}
+				}\hspace{-0.8cm}
+				\xymatrix{
+					~ \ar@{~>}[r]^{\text{computing by adding}}_{\text{one point over 0 and one over } \infty} &
+					~  
+				}\hspace{0.3cm}
 				\xymatrix{
 					\mathbb{C}P^1 \ar[d]^{z \mapsto z^2} &\\
 					\mathbb{C}P^1
@@ -786,4 +995,48 @@
 			\end{matrix} \]
 		\end{ex}
 	\end{remark}
+
+% notes-p.38
+	Start with 
+	\[\begin{matrix}
+		\hspace{1.2cm}
+		\xymatrix{
+			S_f \ar[d]_{\pi} \ar[r]^{\tilde{f}} &\mathbb{C} &\\
+			\mathbb{C}
+		}\hspace{-0.8cm}
+		\xymatrix{
+			~ \ar@{~>}[r]^{\text{'compactify' by adding}}_{\text{points to }S_f} & ~  
+		}\hspace{0.2cm}
+		\xymatrix{
+			\overline{S_f} \ar[d]_{\overline{\pi}} \ar@{.>}[r]^{\tilde{f}} &\mathbb{C}P^1 &\\
+			\mathbb{C}P^1
+		}
+	\end{matrix} \]
+	Whether or not we can extend $ \bar{f} $ to $ \bar{f}: \overline{S_f} \to \mathbb{C}P^1 $ is a local question.
+	We need to find out when 
+	\[\begin{matrix}
+		\xymatrix{
+			D \setminus \lbrace 0 \rbrace \ar@{^{(}->}[d] \ar@{^{(}->}[r] &S_f \ar[r]^{\tilde{f}} \ar@{^{(}->}[d] &\mathbb{C} &\\
+			D \ar@{^{(}->}[r] &\overline{S_f} \ar@{.>}[ur]_{\tilde{f}~?}
+		}
+	\end{matrix}\]
+	that is to consider extensions 
+	\[\begin{matrix}
+	\xymatrix{
+		D \setminus \lbrace 0 \rbrace \ar@{^{(}->}[d] \ar[r]^{\tilde{h}}  &\mathbb{C} &\\
+		D \ar@{.>}[ur]_{\tilde{f}~?}
+	}
+	\end{matrix}\]
+	where $ \tilde{h} $ holomorphic and $ f $ is meromorphic extension.
+	\begin{thm}[Laurent theorem]
+		In this setting 
+		\[ h(z) = \sum_{n=-\infty}^{\infty} c_n z^n \]
+		for each $ z \in D \setminus \lbrace 0 \rbrace $, where \[ c_n = \frac{1}{2\pi i} \int_{\Gamma} \frac{h(z)}{z^{n+1}} \,\mathrm{d}z \]
+	\end{thm}
+
+		The RHS Laurent series provides a meromorphic extension of $ h $ to $ D $ if and only if $ c_n = 0 $ for $ n\leq N $, (some $ N \in \mathbb{Z} $). The extension is holomorphic if and only if $ c_n = 0 $ for $ n\leq 0 $. 
+		
+		It follows that if 
+		\[ \frac{h(z)}{z^{n+1}} \]
+		is bounded on $ D \setminus \lbrace 0 \rbrace $ then $ c_n = 0 $ (there is a zero residue at the oringin). Hence there is a holomorphic extention  $ \iff $ $ h(z) $ is bounded on $ D \setminus \lbrace 0 \rbrace $, and a meromorphic extension $ \iff $ $ \frac{h(z)}{z^{n+1}} $ is bounded on $ D \setminus \lbrace 0 \rbrace $ for some $ n<-1 $. This implies $ \frac{h(z)}{z^{m+1}} $ bounded for all $ m \leq n $.
 \end{document} 
