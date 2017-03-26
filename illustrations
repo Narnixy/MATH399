@@ -2,14 +2,47 @@
 \usepackage{amsmath,amsthm,amssymb}
 \usepackage{enumerate}
 \usepackage[all]{xy}
-\usepackage{tikz,float}
-\usetikzlibrary{decorations.pathreplacing}
+\usepackage{tikz,float,chngcntr}
+\usetikzlibrary{decorations.pathreplacing,decorations.markings}
 
+
+\counterwithin{figure}{section}
+\tikzset{
+  % style to apply some styles to each segment of a path
+  on each segment/.style={
+    decorate,
+    decoration={
+      show path construction,
+      moveto code={},
+      lineto code={
+        \path [#1]
+        (\tikzinputsegmentfirst) -- (\tikzinputsegmentlast);
+      },
+      curveto code={
+        \path [#1] (\tikzinputsegmentfirst)
+        .. controls
+        (\tikzinputsegmentsupporta) and (\tikzinputsegmentsupportb)
+        ..
+        (\tikzinputsegmentlast);
+      },
+      closepath code={
+        \path [#1]
+        (\tikzinputsegmentfirst) -- (\tikzinputsegmentlast);
+      },
+    },
+  },
+  % style to add an arrow in the middle of a path
+  mid arrow/.style={postaction={decorate,decoration={
+        markings,
+        mark=at position .5 with {\arrow[#1]{stealth}}
+      }}},
+}
 
 \begin{document}
 
-\section{}
-% picture 1-1
+\section{Holomorphic Function and Analytic Continuation}
+
+% Figure 1.1:  Analytically continue function f = 1/1-z
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -27,10 +60,10 @@
         node[inner sep=1.5pt, fill, circle, label = {-90: $ z_0 $}] at (0.3,0.7) (point) {}
         node[inner sep=1.5pt, fill, circle, label = {-45: $ z_1 $}] at (0.6,1.2) (point) {};
     \end{tikzpicture}
-    \caption{Analytic continuation of $ f = \frac{1}{1-z}$}
+    \caption{Analytically continue function $ f = \frac{1}{1-z}$}
 \end{figure}
 
-% picture 1-2
+% Figure 1.2:  Analytic continuation along path γ
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -42,9 +75,9 @@
         \node[inner sep=1.5pt, fill, circle, pin= {-35:$ ~~z_0 = \gamma(0) $}] at (0,0) (point) {} 
         node[pin = {-135:$ f $ initially defined here}] at (-0.4,-0.5) (point) {};
     % draw a path
-        \draw (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
+        \draw[postaction={on each segment={mid arrow}}] (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
     % second step 
-        \node[inner sep=1.5pt, fill, circle, pin = {-35:$ \gamma(t_1) $}] at (0.48,0.6) (point) {} 
+        \node[inner sep=1.5pt, fill, circle, pin = {-35:$ \gamma(t_1) $}] at (0.48,0.6) (point) {}
         node[pin = {95:$ f_{t_1} $ is defined here}] at (0.6,1) (point) {};
     % neighbourhoods
         \draw[dashed] 
@@ -58,59 +91,69 @@
         \node[inner sep=1.5pt, fill, circle, pin={-35:$ \gamma(1) $}] at (6,1) (point) {}
         node[below] at(3,1){path $\gamma$};
     \end{tikzpicture}
-    \caption{analytic continuation}
+    \caption{Analytic continuation along path $ \gamma $}
 \end{figure}
 
-
-% picture 1-3
+% Figure 1.3:  Paths γ1 and γ2
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
     % draw axes
+        \path[fill=gray!20] (2,-2) rectangle (4,2) 
+        (7,-2) rectangle (9,2);
         \draw[->] (0,0) to (4,0) node[below] {$x$};
-        \draw[->] (2,-2) to (2,2) node[left] {$y$};
+        \draw[dashed, thick,->] (2,-2) to (2,2) node[left] {$y$};
         \draw[->](5,0) to (9,0) node[below] {$x$};
-        \draw[->](7,-2) to (7,2) node[left] {$y$};
+        \draw[dashed, thick,->](7,-2) to (7,2) node[left] {$y$};
+        
     % draw paths
-        \draw[dashed] (3,0) arc (0:180:1cm) node at (3.3,1.3) {$\gamma_1(t) = e^{\pi it}$}
-        (6,0) arc (-180:0:1cm) node at (8.5,-1.3) {$\gamma_2(t) = e^{-\pi it}$};
-    % node points
+        \draw[postaction={on each segment={mid arrow}}] (3,0) arc (0:180:1cm) node at (3.3,1.3) {$\gamma_1(t) = e^{\pi it}$}
+        (8,0)  arc (0:-180:1cm) node at (8.5,-1.3) {$\gamma_2(t) = e^{-\pi it}$};
+    % node points -1, 0, 1, i, -i
         \node[inner sep=1.5pt, fill, circle, label = {-90: -1}] at (1,0) (point) {}
+        node[inner sep=1.5pt, fill, circle, label = {-45: 0}] at (2,0) (point) {}
         node[inner sep=1.5pt, fill, circle, label = {-90: 1}] at (3,0) (point) {}
-        node[inner sep=1.5pt, fill, circle, label = {90: 1}] at (6,0) (point) {}
-        node[inner sep=1.5pt, fill, circle, label = {90: 1}] at (8,0) (point) {};
+        node[inner sep=1.5pt, fill, circle, label = {-45: $ i $}] at (2,1) (point) {};
+        \node[inner sep=1.5pt, fill, circle, label = {: -1}] at (6,0) (point) {}
+        node[inner sep=1.5pt, fill, circle, label = {135: 0}] at (7,0) (point) {}
+        node[inner sep=1.5pt, fill, circle, label = {: 1}] at (8,0) (point) {}
+        node[inner sep=1.5pt, fill, circle, label = {135: $ -i $}] at (7,-1) (point) {};
     \end{tikzpicture}
-    \caption{Riemann surface of square root function}
+    \caption{Paths $\gamma_1$ and $\gamma_2$}
 \end{figure}
 
-% picture(3) 1-3
+% Figure 1.4:  Riemann surface for square root function
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
-        \draw[fill=gray!20] (0,-2) rectangle (4,2) node[above] at(3.5,1.3) {$ \mathbb{C}^{+} $}
+        % complex plane
+        \path[fill=gray!20] (0,-2) rectangle (4,2) node[above] at(3.5,1.3) {$ \mathbb{C}^{+} $}
         (5,-2) rectangle (9,2) node[above] at(8.5,1.3) {$ \mathbb{C}^{-} $}; 
-        \draw[dashed] (0,0.05) to (2,0.05)
-        (0,-0.05) to (2,-0.05)
-        (5,0.05) to (7,0.05)
+        \draw (0,0.05) to (2,0.05)
         (5,-0.05) to (7,-0.05);
+        \draw[dashed](0,-0.05) to (2,-0.05)
+        (5,0.05) to (7,0.05);
         \node[inner sep=1.5pt, fill, circle, label = {-90: 0}] at (2,0) (point) {}
         node[inner sep=1.5pt, fill, circle, label = {-90: 0}] at (7,0) (point) {};
         \node[above] at(1,0) {$a$}
         node[below] at(1,0) {$b$}
         node[above] at(6,0) {$b$}
         node[below] at(6,0) {$a$};
+    % glue a with a, b with b
+        \draw[thick,red!80,<->] (0.8,0.05) .. controls (2.4,0.5) .. (3.6,0) .. controls (5,-0.5) .. (5.8,-0.05);
+        \draw[thick,dashed,blue!80,<->] (1.2,-0.05) .. controls (2.5,-0.5) .. (3.7,0) .. controls (5,0.5) .. (6.2,0.05);
     \end{tikzpicture}
     \caption{Riemann surface of square root function}
 \end{figure}
 
+\section{Riemann surface of a holomorphic function}
 
-\section{}
-% picture(4) 2-1
+% Figure 2.1:  Analytic continuation
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
     % path gamma and neighbourhoods
-        \draw (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
+        \draw[postaction={on each segment={mid arrow}}] (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
         \draw[dashed] (0,0) circle [radius=1] node [left] {$ D $}
         (0.7,1)  circle [radius=0.55] 
         (1.3,1.6) circle [radius=0.6] 
@@ -121,12 +164,13 @@
         (6,1) circle [radius=0.6] node [below] {$ z_1 $};
     % labelling start- and end-points
         \node[inner sep=1.5pt, fill, circle, label = {270:$ z_0 $}] at (0,0) (point) {} 
-        node[inner sep=1.5pt, fill, circle] at (6,1) (point) {};
+        node[inner sep=1.5pt, fill, circle] at (6,1) (point) {}
+        node[above] at(4,0) {$ \gamma $};
     \end{tikzpicture}
-    \caption{analytic continuation}
+    \caption{Analytic continuation}
 \end{figure}
 
-% picture(5) 4
+% Figure 2.2:  Equivalence classes of paths in P with endpoints in U 
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -143,7 +187,7 @@
     \caption{Equivalence classes of paths in $ P $ with endpoints in $ U $}
 \end{figure}
 
-% picture 5
+% Figure 2.3:  Analytic continuations agree in U 
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -151,22 +195,22 @@
         \draw[dashed,fill=gray!20] (6,1) circle [radius=1] node[right] at(7,1.5) {$ U $};
         \draw[dashed,fill=gray!40] (6.3,0.8) circle [radius=0.3];
     % path gamma and gamma'
-        \draw (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
-        \draw (0,0) .. controls (1,-1) and (2,-1) .. (3,0) .. controls (4,1) and (5,0) ..  (6.3, 0.8);
+        \draw[postaction={on each segment={mid arrow}}] (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
+        \draw[postaction={on each segment={mid arrow}}] (0,0) .. controls (1,-1) and (2,-1) .. (3,0) .. controls (4,1) and (5,0) ..  (6.3, 0.8);
     % labelling start-, end-points and paths
         \node[inner sep=1.5pt, fill, circle, label = {180:$ z_0 $}] at (0,0) (point) {}
         node[inner sep=1.5pt, fill, circle, label = {90:$ \gamma(1) $}] at (6,1) (point) {}
         node[inner sep=1.5pt, fill, circle, pin = {-70:$ \gamma^\prime(1) $}] at (6.3,0.8) (point) {}
         node [above] at (2,2) {$ \gamma $} node [below] at (3.2,0) {$ \gamma^\prime $};
     \end{tikzpicture}
-    \caption{analytic continuations agree in $ U $.}
+    \caption{Analytic continuations agree in $ U $.}
 \end{figure}
 
-% picture 6
+% Figure 2.4:  cover γ by finitely many disks
+
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
-    
     % draw a path
         \draw (0,0) .. controls (0.5,0.25) and (0.5,1.5) .. (2,2) .. controls (3,2.4) and (5,1) .. (6,1);
     % neighbourhoods
@@ -185,19 +229,42 @@
         node[inner sep=1.5pt, fill, circle, pin={105:$    \gamma(t_2) $}] at (0.95,1.325) (point) {}
         node[inner sep=1.5pt, fill, circle] at (6,1) (point) {};
     \end{tikzpicture}
-    \caption{cover $ \gamma $ by finitly many disks}
+    \caption{cover $ \gamma $ by finitly many discs}
 \end{figure}
 
-% picture 7
+% Figure 2.5:  Radical paths in U
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    %neighbourhood U
+        \draw[dashed,fill=gray!20] (4,1) circle [radius=1] node[right] at(5,1.5) {$ U $};
+    % paths
+        \draw[postaction={on each segment={mid arrow}}] (0,0) .. controls (1,0.25) and (1,1.5) .. (4,1);
+        \draw[->,dashed] (4,1) to (4.7,0.7);
+        \draw[->,dashed] (4,1) to (4.4,1.7);
+        \draw[->,dashed] (4,1) to (4.4,0.3);
+        \draw[->,dashed] (4,1) to (3.7,0.4);
+        \draw[->,dashed] (4,1) to (3.7,1.7);
+    % labelling start-, end-points and paths
+        \node[inner sep=1.5pt, fill, circle, label = {90:}] at (4,1) (point) {}
+        node [above] at (1,1) {$ \gamma $};
+    \end{tikzpicture}
+    \caption{Radical paths in $ U $}
+\end{figure}
+
+
+\section{}
+\section{}
+% Figure 4.1:  paths in U
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
     % neighbourhood with irregular shape
         \draw[dashed, fill=gray!20]  plot[smooth, tension=0.7] coordinates { (0.5,3) (1,4.5) (2,5) (4,5) (6,4) (8,4) (8.5,2) (8,1) (6,0) (4,0.8) (1,1.5) (0.5,3) };
     % paths gamma, gamma' and gamma_s
-        \draw (2,4) .. controls (5,3.25) and (5,4.5).. (7,2) node[left] at (4,4) { $ \gamma $};
-        \draw (2,4) .. controls (3,1) .. (5,1.5) .. controls (5,1.5) ..  (7,2) node [above] at (6,1) {$ \gamma^\prime $};
-        \draw[dashed] (2,4) .. controls (3,3) and (4,4) .. (7,2) node[below] at (5,3) {$ \gamma_s $};
+        \draw[postaction={on each segment={mid arrow}}] (2,4) .. controls (5,3.25) and (5,4.5).. (7,2) node[left] at (4,4) { $ \gamma $};
+        \draw[postaction={on each segment={mid arrow}}] (2,4) .. controls (3,1) .. (5,1.5) .. controls (5,1.5) ..  (7,2) node [above] at (6,1) {$ \gamma^\prime $};
+        \draw[dashed, postaction={on each segment={mid arrow}}] (2,4) .. controls (3,3) and (4,4) .. (7,2) node[below] at (5,3) {$ \gamma_s $};
         \node[below] at (6,5) {$ U $};
     % points
         \node[inner sep=1.5pt, fill, circle, label = {180:$ z_0 $}] at (2,4) (point) {} 
@@ -206,7 +273,7 @@
     \caption{paths in $ U $}
 \end{figure}
 
-% picture 8
+% Figure 4.2:  γs′and γs can use the same analytic continuation
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -218,16 +285,14 @@
         (4.3,0.7) circle [radius=0.7] 
         (5,0) circle [radius=0.6];
     % paths
-        \draw (0,2) .. controls (3,1.25) and (3,2.5).. (5,0) node[left] at (3.6,1.8) { $ \gamma $};
-        \draw[dashed] (0,2) .. controls (1,1.7) and (2,2.7) .. (5,0) node[below] at (3.3,1.2) {$ \gamma_s $};
+        \draw[postaction={on each segment={mid arrow}}] (0,2) .. controls (3,1.25) and (3,2.5).. (5,0) node[left] at (3.6,1.8) { $ \gamma $};
+        \draw[dashed, postaction={on each segment={mid arrow}}] (0,2) .. controls (1,1.7) and (2,2.7) .. (5,0) node[below] at (3.3,1.2) {$ \gamma_s $};
     \end{tikzpicture}
     \caption{ $ \gamma_{s^\prime} $ and $ \gamma_s $ can use the same analytic continuation }
 \end{figure}
 
-\section{}
-\section{}
-\section{}
-% picture 5-1
+\section{title}
+%Figure 5.1:  paths in a disc
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
