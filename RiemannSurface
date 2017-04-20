@@ -42,7 +42,7 @@
 
 
 \date{March 2017}
-\title{MATH399: Riemann Surface}
+\title{MATH399: Riemann Surfaces}
 \author{Xinran Yu}
 
 \theoremstyle{plain}
@@ -61,56 +61,77 @@
 	\maketitle
 \section{Holomorphic Function and Analytic Continuation}
 \subsection{Basic definitions}
-	In the first section, we will recall several important results from complex analysis. Then, we introduce the most fundamental concept used in Riemann surface, that is, \emph{analytic continuation}. 
+	In the first section, we will recall several important results from topological space and complex analysis, while properties of topology such as compactness and concept in complex integral such as contour are assumed to be known. Then, we introduce the most fundamental concept for our approach to discuss Riemann surface, that is, \emph{analytic continuation}. 
 	
-	\begin{defn}[Differentiable, holomorphic]
-		Let $ D $ be an open subset of the complex plane $ \mathbb{C} $. Given a complex-valued function $ f : D \to \mathbb{C} $. $ f $ is said to be \emph{differentiable} at a point $ z_0 \in \mathbb{C}$ if
-		\[ \lim\limits_{\Delta z \to 0} \frac{ f(z_0 + \Delta z) - f(z_0) }{\Delta z} \]
-		exists. \\
-		$ f $ is called \emph{holomorphic in $ U \subset D $} if it is differentiable at every point $ z \in U $. \\
-		$ f $ is called \emph{holomorphic at a point $z_0 \in D $} if it is differentiable in a neighbourhood of $ z_0 $. \\
+	\begin{defn}[Hausdorff topological space]
+		A topological space $ (X,\tau_X) $ is called \emph{Hausdorff} if for every $ x,y \in X $ there exists a neighbourhood $ U \in \tau_X $ of $ x $ and a neighbourhood $ V \in \tau_X $ of $ y $ such that $ U \cap V \neq \varnothing $.
 	\end{defn}
 
-	The following theorem allow us to expand holomorphic function into a complex series.
+	Note that $ \mathbb{C}^n $ is a Hausdorff topological space because given $ x, y \in \mathbb{C} $ we can take open balls $ B_\epsilon(x) $ and $ B_\delta(y) $ centred at $ x $ and $ y $ with radius small enough such that $ B_\epsilon(x) $ and $ B_\delta(y) $ are disjoint. 
+	Also, any subspace $ X $ of $ \mathbb{C}^n $ is Hausdorff because we can take neighbourhoods $ U = B_\epsilon(x) \cap X $ and $ V = B_\delta(y) \cap X $ so that $ U \cap V = \varnothing $.
 	
-	\begin{thm}[Taylor's theorem]
-		Let $ f $ be a holomorphic function defined on a open set $ D $. Given a point $ a \in D $. Then there exists constants $ c_n $ such that
-		\[ f(z) = \sum_{n=0}^{\infty} c_n (z-a)^n \]
-		for every $ z \in D $ and constants $ c_n =\frac{f^{(n)}(z)}{n!} $.
+	\begin{defn}[Differentiable, holomorphic]
+		Given an subset $ D $ in the complex plane $ \mathbb{C} $ and a complex-valued function $ f : D \to \mathbb{C} $. $ f $ is said to be \emph{differentiable} at a point $ z_0 \in \mathbb{C}$ if
+		\[ \lim\limits_{\Delta z \to 0} \frac{ f(z_0 + \Delta z) - f(z_0) }{\Delta z} \]
+		exists. The function $ f $ is \emph{holomorphic in an open set} $ U \subset D $ if it is differentiable at every point $ z \in U $. It is \emph{holomorphic at a point} $ z_0 $ if $ f $ is differentiable at each point $ z $ in some neighbourhood of $ z_0 $.
+	\end{defn}
+% ref-Priestley-151
+	Given a holomorphic function $ f $, the following theorem gives the value of $ f $ at a point $ a $ in terms of a contour encircling $ a $. The theorem is crucial in allowing us to expand holomorphic function into complex series. We will see this soon.
+	
+	\begin{thm}[Cauchy's integral formula]
+		Let $ f $ be a holomorphic function inside and on a simple closed contour $ \Gamma $ oriented in the counter-clockwise direction. Then, for every $ a $ in the interior of $ \Gamma $: 
+		\[ f(a) = \frac{1}{2\pi i} \int_{\Gamma} \frac{f(z)}{z-a} \,\mathrm{d}z. \]
 	\end{thm}
-
+		
 	\begin{proof}
-		By Cauchy integral formula, 
-		\[ f(z) = \frac{1}{2\pi i} \int_{\Gamma} \frac{f(w)}{w-z} \,\mathrm{d}w \]	
+		Let $ \Gamma_r $ be a counter-clockwise circle with radius $ r $ around the point $ a $, where $ r $ is small enough that $ \gamma $ completely inside $ \Gamma $. Since $ \frac{f(z)}{z-a} $ is holomorphic between and on the contours $ \Gamma_r $ and $ \Gamma $, 
+		\[ \int_{\Gamma} \frac{f(z)}{z-a} \,\mathrm{d}z = \int_{\Gamma_r} \frac{f(z)}{z-a} \,\mathrm{d}z. \] 
+		Subtract $ \int_{\Gamma_r} \frac{f(z_0)}{z-a}\,\mathrm{d}z $ on both sides, we obtain 
+		\begin{equation} 
+		\int_{\Gamma} \frac{f(z)}{z-a}\,\mathrm{d}z - f(z_0) \int_{\Gamma_r} \frac{1}{z-a}\,\mathrm{d}z = \int_{\Gamma_r} \frac{f(z)-f(z_0)}{z-a}\,\mathrm{d}z. \end{equation} 
+		Since $ \int_{\Gamma_r} \frac{f(z)}{z-a}\,\mathrm{d}z =2\pi i $, and divide $ $
+		\[ \int_{\Gamma} \frac{f(z)}{z-a}\,\mathrm{d}z - 2\pi i f(z_0) = \int_{\Gamma_r} \frac{f(z)-f(z_0)}{z-a}\,\mathrm{d}z. \]
+		Now we estimate the left hand side
+		
+	\end{proof}
+	\begin{thm}[Taylor's theorem]
+		Let $ f $ be a holomorphic function defined on a open disk $ D $. Given a point $ a \in D $. Then there exists constants $ c_n $ such that
+		\[ f(z) = \sum_{n=0}^{\infty} c_n (z-a)^n \]
+		for every $ z \in D $. The constants $ c_n =\frac{f^{(n)}(z)}{n!} $.
+	\end{thm}
+	
+	\begin{proof}
+		By Cauchy's integral formula, 
+		\[ f(z) = \frac{1}{2\pi i} \oint_{\Gamma} \frac{f(w)}{w-z} \,\mathrm{d}w. \]	
 		Since $ |z-a| < |w-a| $, we write
 		\[ \frac{1}{w-z} = \frac{1}{w-a} \frac{1}{1- \frac{z-a}{w-a}} \]	
-		By expanding the second term and interchanging the order of integral and summation
+		where $ \Gamma $ is a contour-clockwise contour in $ D $. By expanding the second term and interchanging the order of integral and summation
 		\begin{align*}
-			f(z) &= \frac{1}{2\pi i} \int_{\Gamma} \frac{f(w)}{w-a} \frac{1}{1- \frac{z-a}{w-a}} \,\mathrm{d}w \\
-			&= \frac{1}{2\pi i} \int_{\Gamma} \sum_{n=0}^{\infty} f(w) \frac{(z-a)^n}{(w-a)^{n+1}} \,\mathrm{d}w \\
-			&= \sum_{n=0}^{\infty} \bigg(\frac{1}{2\pi i} \int_{\Gamma} \frac{f(w)}{(w-a)^{n+1}} \,\mathrm{d}w\bigg) (z-a)^n
+			f(z) &= \frac{1}{2\pi i} \oint_{\Gamma} \frac{f(w)}{w-a} \frac{1}{1- \frac{z-a}{w-a}} \,\mathrm{d}w \\
+			&= \frac{1}{2\pi i} \oint_{\Gamma} \sum_{n=0}^{\infty} f(w) \frac{(z-a)^n}{(w-a)^{n+1}} \,\mathrm{d}w \\
+			&= \sum_{n=0}^{\infty} \bigg(\frac{1}{2\pi i} \oint_{\Gamma} \frac{f(w)}{(w-a)^{n+1}} \,\mathrm{d}w\bigg) (z-a)^n.
 		\end{align*}
-		Apply Cauchy integral formula again, we have 
-		\[ c_n = \frac{1}{2\pi i} \int_{\Gamma} \frac{f(w)}{(w-a)^{n+1}} \,\mathrm{d}w = \frac{f^{(n)}(z)}{n!} \]
+		Apply Cauchy's integral formula again, we have 
+		\[ c_n = \frac{1}{2\pi i} \oint_{\Gamma} \frac{f(w)}{(w-a)^{n+1}} \,\mathrm{d}w = \frac{f^{(n)}(z)}{n!}. \]
 	\end{proof}	
 
-	Taylor series converges in a neighbourhood of $ a $ where the function remains holomorphic. Moreover, this series is unique. Suppose there is another power expansion, $ f(z) = \sum_{n=0}^{\infty} b_n (z-a)^n $, and consider integral $ \int_{\Gamma} \frac{f(z)}{(z-a)^k} \,\mathrm{d}z = \sum_{n=0}^{\infty}b_n \int_{\Gamma} (z-a)^{n-k} \,\mathrm{d}z $. Note that $ \int_{\Gamma} (z-a)^{n-k} \,\mathrm{d}z $ vanishes when $ n-k \neq -1 $ and equals to $ 2\pi i$ when $ n-k = -1 $. So, $ \int_{\Gamma} \frac{f(z)}{(z-a)^k} \,\mathrm{d}z = b_{k-1} \cdot 2\pi i \implies b_{k-1} = \frac{f^{(k-1)}(z)}{(k-1)!} = c _{k-1} $.
+	Taylor series converges in a neighbourhood of $ a $ where the function remains holomorphic. Moreover, this series is unique. Suppose there is another power expansion, $ f(z) = \sum_{n=0}^{\infty} b_n (z-a)^n $, and consider integral $ \oint_{\Gamma} \frac{f(z)}{(z-a)^k} \,\mathrm{d}z = \sum_{n=0}^{\infty}b_n \oint_{\Gamma} (z-a)^{n-k} \,\mathrm{d}z $. Note that $ \oint_{\Gamma} (z-a)^{n-k} \,\mathrm{d}z $ vanishes when $ n-k \neq -1 $ and equals to $ 2\pi i$ when $ n-k = -1 $. So $ \oint_{\Gamma} \frac{f(z)}{(z-a)^k} \,\mathrm{d}z = b_{k-1} \cdot 2\pi i $. Hence, $ b_{k-1} = \frac{f^{(k-1)}(z)}{(k-1)!} = c _{k-1} $.
 
 	\begin{thm}[Identity theorem]
-		If $ D $ is a connected open subset of $ \mathbb{C} $ and $ f: D \to \mathbb{C} $ is a holomorphic function. Assume that the set $ U $ of zeros of $f$, $ U = \lbrace z\in D \mid f(z)=0 \rbrace $ has a limit point in $ D $, then $ f $ is identically zero in $ D $.
+		Suppose $ D $ is a connected open subset of $ \mathbb{C} $ and $ f: D \to \mathbb{C} $ is a holomorphic function. Assume that the set $ U $ of zeros of $f$, $ U = \lbrace z\in D \mid f(z)=0 \rbrace $ has a limit point in $ D $, then $ f $ is identically zero in $ D $.
 	\end{thm}
 
 	\begin{proof}
 		For any point $ a \in U $, $ f(a) = 0 $. Since $ f $ is holomorphic in $ U \subset D $, there is an open disc $ B_\epsilon(a) \subset U$ where
-		\[ f(z) = \sum_{n=0}^{\infty} c_n (z-a)^n = 0 \] 
-		If $ c_n = 0 $ for every $ n>0 $ then $ f $  is identically zero in $ D $. Otherwise, suppose $ k $ is the smallest integer such that $ c_k \neq 0 $. Such $ k $ exists as $ f(a) = 0 $ implies $ c_0 = 0 $, so $ k $ is at least 1. Then there exist holomorphic function $ g $, 
+		\[ f(z) = \sum_{n=0}^{\infty} c_n (z-a)^n = 0. \] 
+		If $ c_n = 0 $ for every $ n>0 $ then $ f $ is identically zero in $ D $. Otherwise, suppose $ k $ is the smallest integer such that $ c_k \neq 0 $. Such $ k $ exists as $ f(a) = 0 $ implies $ c_0 = 0 $, so $ k $ is at least 1. Then there exist holomorphic function $ g $, 
 		\[ g(z) = \sum_{n=0}^{\infty} c_{n+k} (z-a)^n \] 
 		such that $ f(z) = (z-a)^k g(z) $. 
 		Since $ g $ is continuous at $ a $ and $ g(a) = c_k \neq 0 $, there exists $ \epsilon > 0 $ such that $ g \neq 0 $ in the neighbourhood $ B_\epsilon(a)$. But $ (z-a)^k $ is non-zero when $z \in B_\epsilon(a)\backslash \lbrace a\rbrace $, which implies $ f(z) \neq 0 $ when $z \in B_\epsilon(a)\backslash \lbrace a\rbrace $. So $ a $ is an isolated point. This contradicts the assumption that $ U $ has a limit point in $ D $.
 	\end{proof}
 
 	Generally, given two complex function $ f: D \to \mathbb{C} $ and $ g: E \to \mathbb{C} $, and assume they agree in an open subset $ U $ where they are both defined. Applying the identity theorem to their difference $ f-g $, we have 
-	\[ \left. f \right|_{ D \cap E } = \left. g \right|_{ D \cap E } \]
+	\[ \left. f \right|_{ D \cap E } = \left. g \right|_{ D \cap E }. \]
 	
 \subsection{Analytic continuation}
 	As shown in the proof of Taylor's theorem, the power series expansion $ f(z) = \sum_{n=0}^{\infty} c_n (z-a)^n $ converges only in the disc $ D_R(a) $ with $ R>0 $ be the radius of converges. However, in many cases, we are allowed to extend the function to a larger set where its power series originally diverges.
@@ -255,7 +276,7 @@
 		
 		So we can glue the two side labelled '$a$' and the two side labelled '$b$' to form a \emph{Riemann surface} for square root function.
 		
-% Figure 1.4:  Riemann surface for square root function
+% Figure 1.4:  Construct Riemann surface of square root function for $ f(z)=\sqrt{z}$ 
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -276,7 +297,7 @@
         \draw[blue, <->] (0.8,0.05) .. controls (2.4,0.5) .. (3.6,0) .. controls (5,-0.5) .. (5.8,-0.05);
         \draw[dashed, blue, <->] (1.2,-0.05) .. controls (2.5,-0.5) .. (3.7,0) .. controls (5,0.5) .. (6.2,0.05);
     \end{tikzpicture}
-    \caption{Riemann surface of square root function}
+    \caption{Construct Riemann surface of square root function for $ f(z)=\sqrt{z}$ }
 \end{figure}
 
 	\end{enumerate} 
@@ -593,7 +614,7 @@
 			\item[(ii)] We use $ \pi $ to give charts: cover $ S $ by open subsets $ q(U_\gamma) $ for $ \lbrack \gamma \rbrack \in S $ and on each $ q(U_\gamma) $
 			\[ \left.\pi \right|_{q(U_\gamma)}: q(U_\gamma) \longrightarrow U \]
 			is a homeomorphism.
-			\item[(iii)] The transition functions are the identity, hence are analytic. $ \qedhere$
+			\item[(iii)] The transition functions are the identity, hence are analytic. 
 		\end{enumerate}
 	\end{proof}
 
@@ -803,7 +824,7 @@
         \draw[dashed, fill=gray!20]  plot[smooth, tension=0.7] coordinates { (0.5,3) (1,4.5) (2,5) (4,5) (6,4) (8,4) (8.5,2) (8,1) (6,0) (4,0.8) (1,1.5) (0.5,3) };
     % paths gamma, gamma' and gamma_s
         \draw[postaction={on each segment={mid arrow}}] (2,4) .. controls (5,3.25) and (5,4.5).. (7,2) node[left] at (4,4) { $ \gamma $};
-        \draw[postaction={on each segment={mid arrow}}] (2,4) .. controls (3,1) .. (5,1.5) .. controls (5,1.5) ..  (7,2) node [above] at (6,1) {$ \gamma^\prime $};
+        \draw[postaction={on each segment={mid arrow}}] (2,4) .. controls (4,1.5) ..  (7,2) node [above] at (6,1) {$\gamma^\prime $};
         \draw[dashed, postaction={on each segment={mid arrow}}] (2,4) .. controls (3,3) and (4,4) .. (7,2) node[below] at (5,3) {$ \gamma_s $};
         \node[below] at (6,5) {$ U $};
     % points
@@ -1107,4 +1128,5 @@
 		It follows that if 
 		\[ \frac{h(z)}{z^{n+1}} \]
 		is bounded on $ D \setminus \lbrace 0 \rbrace $ then $ c_n = 0 $ (there is a zero residue at the origin). Hence there is a holomorphic extension  $ \iff $ $ h(z) $ is bounded on $ D \setminus \lbrace 0 \rbrace $, and a meromorphic extension $ \iff $ $ \frac{h(z)}{z^{n+1}} $ is bounded on $ D \setminus \lbrace 0 \rbrace $ for some $ n<-1 $. This implies $ \frac{h(z)}{z^{m+1}} $ bounded for all $ m \leq n $.
+		
 \end{document} 
