@@ -124,7 +124,7 @@
     \caption{Paths $\gamma_1$ and $\gamma_2$}
 \end{figure}
 
-% Figure 1.4:  Riemann surface for square root function
+% Figure 1.4:  Construct Riemann surface of square root function for $ f(z)=\sqrt{z}$ 
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -145,7 +145,7 @@
         \draw[blue, <->] (0.8,0.05) .. controls (2.4,0.5) .. (3.6,0) .. controls (5,-0.5) .. (5.8,-0.05);
         \draw[dashed, blue, <->] (1.2,-0.05) .. controls (2.5,-0.5) .. (3.7,0) .. controls (5,0.5) .. (6.2,0.05);
     \end{tikzpicture}
-    \caption{Riemann surface of square root function}
+    \caption{Construct Riemann surface of square root function for $ f(z)=\sqrt{z}$ }
 \end{figure}
 
 \section{Riemann surface of a holomorphic function}
@@ -264,8 +264,8 @@
     % neighbourhood with irregular shape
         \draw[dashed, fill=gray!20]  plot[smooth, tension=0.7] coordinates { (0.5,3) (1,4.5) (2,5) (4,5) (6,4) (8,4) (8.5,2) (8,1) (6,0) (4,0.8) (1,1.5) (0.5,3) };
     % paths gamma, gamma' and gamma_s
-        \draw[postaction={on each segment={mid arrow}}] (2,4) .. controls (5,3.25) and (5,4.5).. (7,2) node[left] at (4,4) { $ \gamma $};
-        \draw[postaction={on each segment={mid arrow}}] (2,4) .. controls (3,1) .. (5,1.5) .. controls (5,1.5) ..  (7,2) node [above] at (6,1) {$ \gamma^\prime $};
+        \draw[postaction={on each segment={mid arrow}}] (2,4) .. controls (5,3.25) and (5,4.5).. (7,2) node[left] at (4,4) { $ \gamma $}; 
+        \draw[postaction={on each segment={mid arrow}}] (2,4) .. controls (4,1.5) ..  (7,2) node [above] at (6,1) {$\gamma^\prime $};
         \draw[dashed, postaction={on each segment={mid arrow}}] (2,4) .. controls (3,3) and (4,4) .. (7,2) node[below] at (5,3) {$ \gamma_s $};
         \node[below] at (6,5) {$ U $};
     % points
